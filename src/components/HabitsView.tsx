@@ -290,6 +290,7 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
   const weekPct  = Math.round(weekDone / weekDays.length * 100);
 
   return (
+    <>
     <div className="rounded-3xl overflow-hidden transition-all duration-200 ani-up h-full"
       style={{ background: 'rgba(255,255,255,.92)', border: `1.5px solid ${hex}35`, boxShadow: `0 6px 28px rgba(200,150,180,.1), 0 0 0 0 ${hex}` }}>
       {/* Color top strip */}
@@ -415,6 +416,7 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
     {showToast && (
       <MotivationToast habitTitle={habit.title} onClose={() => setShowToast(false)} />
     )}
+    </>
   );
 }
 
