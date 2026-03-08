@@ -8,6 +8,7 @@ import { PlansView } from './components/PlansView';
 import { CalendarView } from './components/CalendarView';
 import { GoalDetail } from './components/GoalDetail';
 import { GoalForm } from './components/GoalForm';
+import { StatsView } from './components/StatsView';
 import { AuthPage, OAuthCallback } from './components/AuthPage';
 import { Heart, Menu } from 'lucide-react';
 
@@ -87,6 +88,7 @@ function AppShell() {
         {view === 'plans'       && <PlansView onNewGoal={() => setGoalFormOpen(true)} />}
         {view === 'calendar'    && <CalendarView />}
         {view === 'goal-detail' && <GoalDetail />}
+        {view === 'stats'       && <StatsView />}
       </main>
 
       <GoalForm open={goalFormOpen} onClose={() => setGoalFormOpen(false)} />

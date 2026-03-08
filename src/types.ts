@@ -40,7 +40,7 @@ export interface InboxTask {
 
 export type GoalColor = 'blue' | 'red' | 'green' | 'orange' | 'purple' | 'cyan' | 'pink';
 
-export type ViewMode = 'inbox' | 'today' | 'plans' | 'calendar' | 'goal-detail';
+export type ViewMode = 'inbox' | 'today' | 'plans' | 'calendar' | 'goal-detail' | 'stats';
 
 export const GOAL_COLORS: Record<GoalColor, string> = {
   blue:   '#7ec8e3',
