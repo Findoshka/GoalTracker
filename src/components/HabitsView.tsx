@@ -30,11 +30,13 @@ function getRandomQuote() {
 // ── Motivation toast ──────────────────────────────────────────────────────────
 function MotivationToast({ habitTitle, onClose }: { habitTitle: string; onClose: () => void }) {
   const quote = useMemo(() => getRandomQuote(), []);
+  const onCloseRef = useCallback(onClose, []); // eslint-disable-line
 
   useEffect(() => {
-    const t = setTimeout(onClose, 5000);
+    const t = setTimeout(onCloseRef, 5000);
     return () => clearTimeout(t);
-  }, [onClose]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return createPortal(
     <div style={{
@@ -267,9 +269,9 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
 
   const handleToggleToday = useCallback(async () => {
     const wasDone = completionSet.has(todayKey);
-    await toggleHabitDate(habit.id, todayKey);
-    // show quote only when marking as done (not undoing)
+    // show toast immediately before async call to avoid re-render race
     if (!wasDone) setShowToast(true);
+    await toggleHabitDate(habit.id, todayKey);
   }, [completionSet, todayKey, toggleHabitDate, habit.id]);
 
   // completion rate for shown week
