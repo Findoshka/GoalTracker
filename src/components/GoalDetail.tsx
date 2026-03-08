@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Calendar, Trash2, Plus, TrendingUp, Layers, Circle, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Trash2, Plus, TrendingUp, Layers, Circle } from 'lucide-react';
 import { useStore } from '../store';
 import { calcGoalProgress, calcMonthlyProgress, monthName } from '../utils';
 import { MonthlyStageCard } from './MonthlyStageCard';
