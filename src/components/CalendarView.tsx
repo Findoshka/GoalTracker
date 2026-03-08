@@ -139,7 +139,7 @@ export function CalendarView() {
 
               return (
                 <div key={cell.date}
-                  className="flex flex-col p-1 md:p-2 group/cell cursor-pointer transition-colors duration-150"
+                  className="relative flex flex-col p-1 md:p-2 group/cell cursor-pointer transition-colors duration-150"
                   style={{
                     borderRight: '1px solid rgba(240,168,208,.1)',
                     opacity: !cell.isCurrentMonth ? 0.3 : 1,
@@ -155,28 +155,37 @@ export function CalendarView() {
                     }
                   }}>
 
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col items-center gap-0.5">
                     <div className="w-[20px] h-[20px] md:w-[22px] md:h-[22px] flex items-center justify-center rounded-full text-[11px] md:text-[12px] font-bold transition-all"
                       style={isToday
                         ? { background:'linear-gradient(135deg,#f0a8d0,#a8d8ea)', color:'#fff', boxShadow:'0 0 10px rgba(240,168,208,.5)' }
                         : { color:'#c4a0b8' }}>
                       {cell.day}
                     </div>
-                    {/* Add button — desktop only */}
+
+                    {/* Add button — desktop only (absolute top-right) */}
                     {cell.isCurrentMonth && !isAdding && (
                       <button
                         onClick={e => { e.stopPropagation(); setAddingCell(cell.date); setCellDraft(''); }}
-                        className="w-5 h-5 rounded-lg hidden md:flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-all"
+                        className="absolute top-1 right-1 w-4 h-4 rounded-md hidden md:flex items-center justify-center opacity-0 group-hover/cell:opacity-100 transition-all"
                         style={{ color:'#c0628f' }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(249,168,212,.2)'; }}
                         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}>
                         <Plus className="w-3 h-3" />
                       </button>
                     )}
-                    {/* Dot indicator on mobile when tasks exist */}
+
+                    {/* Task dots on mobile */}
                     {tasks.length > 0 && (
-                      <div className="w-1.5 h-1.5 rounded-full md:hidden"
-                        style={{ background: tasks[0].color }} />
+                      <div className="flex flex-wrap justify-center gap-[2px] md:hidden mt-0.5">
+                        {tasks.slice(0, 3).map((t, ti) => (
+                          <div key={ti} className="w-[5px] h-[5px] rounded-full"
+                            style={{ background: t.color }} />
+                        ))}
+                        {tasks.length > 3 && (
+                          <div className="w-[5px] h-[5px] rounded-full" style={{ background: '#d4a0c0' }} />
+                        )}
+                      </div>
                     )}
                   </div>
 
