@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useStore } from '../store';
 import { HABIT_COLORS, type HabitColor, type HabitIcon } from '../types';
 import { Plus, Flame, Check, Trash2, X, Star, Heart, Zap, BookOpen, Dumbbell, Droplets, Music, Sun, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
@@ -31,81 +32,78 @@ function MotivationToast({ habitTitle, onClose }: { habitTitle: string; onClose:
   const quote = useMemo(() => getRandomQuote(), []);
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    // animate in
-    const t1 = setTimeout(() => setVisible(true), 30);
-    // auto-close after 4s
-    const t2 = setTimeout(() => { setVisible(false); setTimeout(onClose, 400); }, 4000);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+  const close = useCallback(() => {
+    setVisible(false);
+    setTimeout(onClose, 400);
   }, [onClose]);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center pb-8 px-4 pointer-events-none">
-      <div
-        className="pointer-events-auto w-full max-w-sm"
-        style={{
-          transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.95)',
-          opacity: visible ? 1 : 0,
-          transition: 'transform .4s cubic-bezier(.34,1.56,.64,1), opacity .35s ease',
-        }}>
-        <div className="rounded-3xl overflow-hidden"
-          style={{
-            background: 'rgba(255,248,253,.97)',
-            border: '1.5px solid rgba(255,182,215,.4)',
-            boxShadow: '0 24px 60px rgba(200,150,180,.25), 0 4px 20px rgba(147,213,240,.15)',
-          }}>
-          {/* Top gradient strip */}
-          <div className="h-1" style={{ background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)' }} />
+  useEffect(() => {
+    const t1 = setTimeout(() => setVisible(true), 30);
+    const t2 = setTimeout(close, 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [close]);
 
-          <div className="px-5 py-4">
-            {/* Header */}
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg,rgba(255,182,215,.25),rgba(147,213,240,.25))' }}>
-                  <Sparkles className="w-4 h-4" style={{ color: '#ffb6d9' }} />
-                </div>
-                <div>
-                  <div className="text-[13px] font-black" style={{ color: '#5a3a5a' }}>Отлично!</div>
-                  <div className="text-[11px]" style={{ color: '#b090b0' }}>«{habitTitle}» выполнено</div>
-                </div>
+  const toast = (
+    <div style={{
+      position: 'fixed', bottom: 32, left: '50%', transform: `translateX(-50%) translateY(${visible ? 0 : 40}px) scale(${visible ? 1 : 0.95})`,
+      opacity: visible ? 1 : 0,
+      transition: 'transform .4s cubic-bezier(.34,1.56,.64,1), opacity .35s ease',
+      zIndex: 9999, width: '100%', maxWidth: 380, padding: '0 16px',
+      pointerEvents: 'auto',
+    }}>
+      <div style={{
+        borderRadius: 24, overflow: 'hidden',
+        background: 'rgba(255,248,253,.98)',
+        border: '1.5px solid rgba(255,182,215,.45)',
+        boxShadow: '0 24px 60px rgba(200,150,180,.3), 0 4px 20px rgba(147,213,240,.2)',
+      }}>
+        {/* Top strip */}
+        <div style={{ height: 4, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)' }} />
+
+        <div style={{ padding: '16px 20px' }}>
+          {/* Header */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,rgba(255,182,215,.3),rgba(147,213,240,.3))' }}>
+                <Sparkles style={{ width: 18, height: 18, color: '#e879b8' }} />
               </div>
-              <button onClick={() => { setVisible(false); setTimeout(onClose, 400); }}
-                className="w-7 h-7 flex items-center justify-center rounded-xl transition-all"
-                style={{ color: '#c8a0c0' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,182,215,.15)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}>
-                <X className="w-3.5 h-3.5" />
-              </button>
+              <div>
+                <div style={{ fontSize: 14, fontWeight: 900, color: '#5a3a5a' }}>Отлично!</div>
+                <div style={{ fontSize: 11, color: '#b090b0', marginTop: 1 }}>«{habitTitle}» выполнено</div>
+              </div>
             </div>
+            <button onClick={close}
+              style={{ width: 28, height: 28, borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c8a0c0' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,182,215,.18)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+              <X style={{ width: 14, height: 14 }} />
+            </button>
+          </div>
 
-            {/* Quote */}
-            <div className="px-3 py-3 rounded-2xl"
-              style={{ background: 'linear-gradient(135deg,rgba(255,182,215,.1),rgba(147,213,240,.1))', border: '1px solid rgba(255,182,215,.2)' }}>
-              <p className="text-[14px] font-semibold leading-relaxed" style={{ color: '#5a3a5a' }}>
-                «{quote.text}»
+          {/* Quote */}
+          <div style={{ padding: '12px 14px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(255,182,215,.12),rgba(147,213,240,.12))', border: '1px solid rgba(255,182,215,.25)' }}>
+            <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.55, color: '#5a3a5a', margin: 0 }}>
+              «{quote.text}»
+            </p>
+            {quote.author && (
+              <p style={{ fontSize: 11, color: '#b090b0', marginTop: 6, textAlign: 'right', margin: '6px 0 0' }}>
+                — {quote.author}
               </p>
-              {quote.author && (
-                <p className="text-[11px] mt-1.5 text-right font-medium" style={{ color: '#b090b0' }}>
-                  — {quote.author}
-                </p>
-              )}
-            </div>
+            )}
+          </div>
 
-            {/* Progress dots (auto-close timer) */}
-            <div className="flex justify-center mt-3">
-              <div className="h-1 rounded-full overflow-hidden w-16" style={{ background: 'rgba(255,182,215,.2)' }}>
-                <div className="h-full rounded-full" style={{
-                  background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)',
-                  animation: 'quote-timer 4s linear forwards',
-                }} />
-              </div>
+          {/* Timer bar */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
+            <div style={{ height: 3, borderRadius: 99, overflow: 'hidden', width: 60, background: 'rgba(255,182,215,.2)' }}>
+              <div style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)', animation: 'quote-timer 4.5s linear forwards' }} />
             </div>
           </div>
         </div>
       </div>
     </div>
   );
+
+  return createPortal(toast, document.body);
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
