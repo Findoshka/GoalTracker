@@ -100,6 +100,7 @@ interface AppState {
   toggleTask: (goalId: string, stageId: string, weekId: string, taskId: string) => Promise<void>;
   updateTask: (goalId: string, stageId: string, weekId: string, taskId: string, title: string) => Promise<void>;
   deleteTask: (goalId: string, stageId: string, weekId: string, taskId: string) => Promise<void>;
+  moveTask: (goalId: string, fromStageId: string, fromWeekId: string, taskId: string, toStageId: string, toWeekId: string) => Promise<void>;
 }
 
 export const useStore = create<AppState>((set, get) => ({
@@ -366,5 +367,31 @@ export const useStore = create<AppState>((set, get) => ({
         }),
       }),
     }));
+  },
+
+  moveTask: async (goalId, fromStageId, fromWeekId, taskId, toStageId, toWeekId) => {
+    // Optimistic update first for instant feel
+    set(s => {
+      const goal = s.goals.find(g => g.id === goalId);
+      if (!goal) return s;
+      const fromWeek = goal.monthlyStages.find(ms => ms.id === fromStageId)?.weeklyGoals.find(wg => wg.id === fromWeekId);
+      const task = fromWeek?.tasks.find(t => t.id === taskId);
+      if (!task) return s;
+      return {
+        goals: s.goals.map(g => g.id !== goalId ? g : {
+          ...g,
+          monthlyStages: g.monthlyStages.map(ms => ({
+            ...ms,
+            weeklyGoals: ms.weeklyGoals.map(wg => {
+              if (wg.id === fromWeekId) return { ...wg, tasks: wg.tasks.filter(t => t.id !== taskId) };
+              if (wg.id === toWeekId) return { ...wg, tasks: [...wg.tasks, task] };
+              return wg;
+            }),
+          })),
+        }),
+      };
+    });
+    // Persist to backend
+    await goalsApi.moveTask(goalId, taskId, toWeekId);
   },
 }));

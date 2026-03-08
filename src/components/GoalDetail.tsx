@@ -1,17 +1,44 @@
 import { useState } from 'react';
-import { ArrowLeft, Calendar, Trash2, Plus, TrendingUp, Layers, Circle } from 'lucide-react';
+import { ArrowLeft, Calendar, Trash2, Plus, TrendingUp, Layers, Circle, GripVertical } from 'lucide-react';
+import { DndContext, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from '@dnd-kit/core';
 import { useStore } from '../store';
 import { calcGoalProgress, calcMonthlyProgress, monthName } from '../utils';
 import { MonthlyStageCard } from './MonthlyStageCard';
 import { AddMonthForm } from './AddMonthForm';
 import { InlineEdit } from './InlineEdit';
 import { GOAL_COLORS } from '../types';
+import type { Task } from '../types';
 
 export function GoalDetail() {
-  const { goals, activeGoalId, setView, updateGoal, deleteGoal, addMonthlyStage } = useStore();
+  const { goals, activeGoalId, setView, updateGoal, deleteGoal, addMonthlyStage, moveTask } = useStore();
   const [addMonth, setAddMonth] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [draggingTask, setDraggingTask] = useState<Task | null>(null);
   const goal = goals.find(g => g.id === activeGoalId);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 8 } }),
+  );
+
+  const handleDragStart = (e: DragStartEvent) => {
+    const data = e.active.data.current as { task: Task } | undefined;
+    if (data?.task) setDraggingTask(data.task);
+  };
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    setDraggingTask(null);
+    const { active, over } = e;
+    if (!over || !goal) return;
+
+    const src = active.data.current as { taskId: string; goalId: string; stageId: string; weekId: string } | undefined;
+    const dst = over.data.current as { weekId: string; stageId: string; goalId: string } | undefined;
+
+    if (!src || !dst) return;
+    if (src.weekId === dst.weekId) return; // same week — no move
+
+    moveTask(goal.id, src.stageId, src.weekId, src.taskId, dst.stageId, dst.weekId);
+  };
 
   if (!goal) return (
     <div className="flex-1 flex items-center justify-center text-[13px]" style={{ background: '#fdf6fa', color: '#d4a0c0' }}>
@@ -29,6 +56,7 @@ export function GoalDetail() {
   const strokeDash = (progress / 100) * circumference;
 
   return (
+    <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
     <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#fdf6fa' }}>
 
       {/* Header */}
@@ -211,6 +239,26 @@ export function GoalDetail() {
           </div>
         </div>
       )}
+
+      {/* Drag overlay — floating ghost of dragged task */}
+      <DragOverlay dropAnimation={{ duration: 180, easing: 'cubic-bezier(.18,1,.22,1)' }}>
+        {draggingTask && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl shadow-xl"
+            style={{
+              background: 'rgba(255,248,253,.97)',
+              border: `1.5px solid ${hex}50`,
+              boxShadow: `0 12px 32px ${hex}30, 0 4px 12px rgba(0,0,0,.08)`,
+              maxWidth: 280,
+              cursor: 'grabbing',
+            }}>
+            <GripVertical className="w-3 h-3 shrink-0" style={{ color: hex }} />
+            <span className="text-[13px] font-semibold truncate" style={{ color: '#5a2a4a' }}>
+              {draggingTask.title}
+            </span>
+          </div>
+        )}
+      </DragOverlay>
     </div>
+    </DndContext>
   );
 }

@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { useDroppable } from '@dnd-kit/core';
 import { useStore } from '../store';
 import { calcWeeklyProgress } from '../utils';
 import { ProgressBar } from './ProgressBar';
@@ -18,6 +19,11 @@ export function WeeklyGoalCard({ week, goalId, stageId, color }: Props) {
   const hex = GOAL_COLORS[color];
   const done = week.tasks.filter(t => t.completed).length;
 
+  const { setNodeRef, isOver } = useDroppable({
+    id: `week-${week.id}`,
+    data: { weekId: week.id, stageId, goalId },
+  });
+
   return (
     <div className="ml-4 pl-4 relative" style={{ borderLeft: `2px solid ${hex}35` }}>
       {/* Timeline dot */}
@@ -25,7 +31,6 @@ export function WeeklyGoalCard({ week, goalId, stageId, color }: Props) {
         style={{ backgroundColor: '#fdf6fa', borderColor: hex, boxShadow: `0 0 6px ${hex}55` }} />
 
       <div className="flex items-center gap-2 min-h-[36px] py-1 group/w rounded-xl px-1 transition-colors"
-        style={{}}
         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(249,168,212,.06)'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}>
 
@@ -40,7 +45,7 @@ export function WeeklyGoalCard({ week, goalId, stageId, color }: Props) {
           Нед {week.weekNumber}
         </span>
 
-        {/* Title — main visible text */}
+        {/* Title */}
         <div className="flex-1 min-w-0">
           <InlineEdit value={week.title} onSave={(v) => updateWeeklyGoal(goalId, stageId, week.id, v)}
             className="text-[14px] font-semibold" style={{ color: '#4a1a3a' }} />
@@ -68,7 +73,16 @@ export function WeeklyGoalCard({ week, goalId, stageId, color }: Props) {
       </div>
 
       {exp && (
-        <div className="ml-5 pb-2 space-y-0.5">
+        <div
+          ref={setNodeRef}
+          className="ml-5 pb-2 space-y-0.5 rounded-xl transition-all duration-200"
+          style={{
+            minHeight: 32,
+            background: isOver ? `${hex}0e` : 'transparent',
+            border: isOver ? `1.5px dashed ${hex}60` : '1.5px solid transparent',
+            padding: isOver ? '6px 6px 6px 0' : undefined,
+          }}
+        >
           {week.tasks.map(t => (
             <TaskItem key={t.id} task={t} goalId={goalId} stageId={stageId} weekId={week.id} color={color} />
           ))}

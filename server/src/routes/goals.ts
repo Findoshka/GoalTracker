@@ -137,4 +137,16 @@ router.delete('/:goalId/stages/:stageId/weeks/:weekId/tasks/:taskId', async (req
   res.json({ ok: true });
 });
 
+// Move task to a different week (drag & drop)
+router.patch('/:goalId/tasks/:taskId/move', async (req: AuthRequest, res: Response) => {
+  const taskId = p(req.params.taskId);
+  const { targetWeekId } = req.body;
+  const task = await prisma.task.findFirst({ where: { id: taskId, weeklyGoal: { monthlyStage: { goal: { userId: req.userId! } } } } });
+  if (!task) { res.status(404).json({ error: 'Task not found' }); return; }
+  const targetWeek = await prisma.weeklyGoal.findFirst({ where: { id: targetWeekId, monthlyStage: { goal: { userId: req.userId! } } } });
+  if (!targetWeek) { res.status(404).json({ error: 'Target week not found' }); return; }
+  const updated = await prisma.task.update({ where: { id: taskId }, data: { weeklyGoalId: targetWeekId } });
+  res.json(updated);
+});
+
 export default router;

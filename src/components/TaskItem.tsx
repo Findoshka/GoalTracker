@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Check, Trash2 } from 'lucide-react';
+import { Check, Trash2, GripVertical } from 'lucide-react';
+import { useDraggable } from '@dnd-kit/core';
 import { useStore } from '../store';
 import { InlineEdit } from './InlineEdit';
 import type { Task, GoalColor } from '../types';
@@ -13,6 +14,11 @@ export function TaskItem({ task, goalId, stageId, weekId, color }: Props) {
   const hex = GOAL_COLORS[color];
   const [pop, setPop] = useState(false);
 
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: task.id,
+    data: { taskId: task.id, goalId, stageId, weekId, task },
+  });
+
   const toggle = () => {
     setPop(true);
     if (!task.completed) playMeow();
@@ -21,7 +27,25 @@ export function TaskItem({ task, goalId, stageId, weekId, color }: Props) {
   };
 
   return (
-    <div className="flex items-center gap-[10px] group/t h-[34px] px-1 -mx-1 rounded-xl transition-all hover:bg-pink-50/60">
+    <div
+      ref={setNodeRef}
+      className="flex items-center gap-[10px] group/t h-[34px] px-1 -mx-1 rounded-xl transition-all hover:bg-pink-50/60"
+      style={{
+        opacity: isDragging ? 0.35 : 1,
+        cursor: isDragging ? 'grabbing' : 'default',
+      }}
+    >
+      {/* Drag handle */}
+      <button
+        {...listeners}
+        {...attributes}
+        className="shrink-0 opacity-0 group-hover/t:opacity-100 transition-opacity cursor-grab active:cursor-grabbing"
+        style={{ color: '#d4b8cc', padding: '2px 0', touchAction: 'none' }}
+        tabIndex={-1}
+      >
+        <GripVertical className="w-3 h-3" />
+      </button>
+
       <button onClick={toggle}
         className={`w-[16px] h-[16px] rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${pop ? 'ani-check' : ''}`}
         style={{

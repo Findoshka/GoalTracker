@@ -87,6 +87,7 @@ export const goalsApi = {
   addTask: (goalId: string, stageId: string, weekId: string, data: object) => api.post(`/api/goals/${goalId}/stages/${stageId}/weeks/${weekId}/tasks`, data),
   updateTask: (goalId: string, stageId: string, weekId: string, taskId: string, data: object) => api.patch(`/api/goals/${goalId}/stages/${stageId}/weeks/${weekId}/tasks/${taskId}`, data),
   removeTask: (goalId: string, stageId: string, weekId: string, taskId: string) => api.delete(`/api/goals/${goalId}/stages/${stageId}/weeks/${weekId}/tasks/${taskId}`),
+  moveTask: (goalId: string, taskId: string, targetWeekId: string) => api.patch(`/api/goals/${goalId}/tasks/${taskId}/move`, { targetWeekId }),
 };
 
 // ─── Inbox API ────────────────────────────────────────────────────────────────
