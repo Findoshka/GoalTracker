@@ -150,8 +150,8 @@ router.get(
   },
   async (req: Request, res: Response) => {
     const user = req.user as { id: string; email: string; name: string | null; avatar: string | null };
-    const { accessToken } = await issueTokens(user.id, user.email, res);
-    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${accessToken}`);
+    const { accessToken, refreshToken } = await issueTokens(user.id, user.email, res);
+    res.redirect(`${process.env.CLIENT_URL}/auth/callback?token=${accessToken}&rt=${refreshToken}`);
   }
 );
 
