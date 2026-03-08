@@ -30,80 +30,69 @@ function getRandomQuote() {
 // ── Motivation toast ──────────────────────────────────────────────────────────
 function MotivationToast({ habitTitle, onClose }: { habitTitle: string; onClose: () => void }) {
   const quote = useMemo(() => getRandomQuote(), []);
-  const [visible, setVisible] = useState(false);
-
-  const close = useCallback(() => {
-    setVisible(false);
-    setTimeout(onClose, 400);
-  }, [onClose]);
 
   useEffect(() => {
-    const t1 = setTimeout(() => setVisible(true), 30);
-    const t2 = setTimeout(close, 4500);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [close]);
+    const t = setTimeout(onClose, 5000);
+    return () => clearTimeout(t);
+  }, [onClose]);
 
-  const toast = (
+  return createPortal(
     <div style={{
-      position: 'fixed', bottom: 32, left: '50%', transform: `translateX(-50%) translateY(${visible ? 0 : 40}px) scale(${visible ? 1 : 0.95})`,
-      opacity: visible ? 1 : 0,
-      transition: 'transform .4s cubic-bezier(.34,1.56,.64,1), opacity .35s ease',
-      zIndex: 9999, width: '100%', maxWidth: 380, padding: '0 16px',
-      pointerEvents: 'auto',
+      position: 'fixed',
+      bottom: 32,
+      right: 32,
+      zIndex: 99999,
+      width: 360,
+      borderRadius: 24,
+      overflow: 'hidden',
+      background: '#fff8fd',
+      border: '2px solid #ffb6d9',
+      boxShadow: '0 20px 60px rgba(200,100,160,.25), 0 4px 20px rgba(147,213,240,.2)',
+      animation: 'toast-in .4s cubic-bezier(.34,1.56,.64,1) both',
     }}>
-      <div style={{
-        borderRadius: 24, overflow: 'hidden',
-        background: 'rgba(255,248,253,.98)',
-        border: '1.5px solid rgba(255,182,215,.45)',
-        boxShadow: '0 24px 60px rgba(200,150,180,.3), 0 4px 20px rgba(147,213,240,.2)',
-      }}>
-        {/* Top strip */}
-        <div style={{ height: 4, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)' }} />
+      {/* Top strip */}
+      <div style={{ height: 4, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)' }} />
 
-        <div style={{ padding: '16px 20px' }}>
-          {/* Header */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,rgba(255,182,215,.3),rgba(147,213,240,.3))' }}>
-                <Sparkles style={{ width: 18, height: 18, color: '#e879b8' }} />
-              </div>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 900, color: '#5a3a5a' }}>Отлично!</div>
-                <div style={{ fontSize: 11, color: '#b090b0', marginTop: 1 }}>«{habitTitle}» выполнено</div>
-              </div>
+      <div style={{ padding: '16px 20px' }}>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 38, height: 38, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,rgba(255,182,215,.3),rgba(147,213,240,.3))' }}>
+              <Sparkles style={{ width: 20, height: 20, color: '#e879b8' }} />
             </div>
-            <button onClick={close}
-              style={{ width: 28, height: 28, borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c8a0c0' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,182,215,.18)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-              <X style={{ width: 14, height: 14 }} />
-            </button>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 900, color: '#5a3a5a' }}>Отлично! 🎉</div>
+              <div style={{ fontSize: 12, color: '#b090b0', marginTop: 2 }}>«{habitTitle}» выполнено</div>
+            </div>
           </div>
+          <button onClick={onClose}
+            style={{ width: 28, height: 28, borderRadius: 10, border: 'none', background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#c8a0c0', flexShrink: 0 }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,182,215,.2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+            <X style={{ width: 14, height: 14 }} />
+          </button>
+        </div>
 
-          {/* Quote */}
-          <div style={{ padding: '12px 14px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(255,182,215,.12),rgba(147,213,240,.12))', border: '1px solid rgba(255,182,215,.25)' }}>
-            <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.55, color: '#5a3a5a', margin: 0 }}>
-              «{quote.text}»
+        {/* Quote */}
+        <div style={{ padding: '12px 14px', borderRadius: 16, background: 'linear-gradient(135deg,rgba(255,182,215,.1),rgba(147,213,240,.1))', border: '1px solid rgba(255,182,215,.3)' }}>
+          <p style={{ fontSize: 14, fontWeight: 600, lineHeight: 1.6, color: '#5a3a5a', margin: 0 }}>
+            «{quote.text}»
+          </p>
+          {quote.author && (
+            <p style={{ fontSize: 11, color: '#b090b0', marginTop: 6, textAlign: 'right', margin: '6px 0 0' }}>
+              — {quote.author}
             </p>
-            {quote.author && (
-              <p style={{ fontSize: 11, color: '#b090b0', marginTop: 6, textAlign: 'right', margin: '6px 0 0' }}>
-                — {quote.author}
-              </p>
-            )}
-          </div>
+          )}
+        </div>
 
-          {/* Timer bar */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 12 }}>
-            <div style={{ height: 3, borderRadius: 99, overflow: 'hidden', width: 60, background: 'rgba(255,182,215,.2)' }}>
-              <div style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)', animation: 'quote-timer 4.5s linear forwards' }} />
-            </div>
-          </div>
+        {/* Timer bar */}
+        <div style={{ marginTop: 12, height: 3, borderRadius: 99, overflow: 'hidden', background: 'rgba(255,182,215,.2)' }}>
+          <div style={{ height: '100%', borderRadius: 99, background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)', animation: 'quote-timer 5s linear forwards' }} />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
-
-  return createPortal(toast, document.body);
 }
 
 // ── helpers ───────────────────────────────────────────────────────────────────
