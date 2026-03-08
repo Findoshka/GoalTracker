@@ -286,6 +286,7 @@ function GoogleIcon() {
 // ── OAuth callback ────────────────────────────────────────────────────────────
 export function OAuthCallback() {
   const { setTokenAndUser } = useAuth();
+  const [status, setStatus] = useState<'loading' | 'waking'>('loading');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -293,14 +294,26 @@ export function OAuthCallback() {
     const error = params.get('error');
     if (error) { window.location.replace('/?error=' + error); return; }
     if (!token) { window.location.replace('/'); return; }
-    import('../api').then(({ setAccessToken, authApi: a }) => {
+
+    const tryLogin = async (retries = 8, delay = 3000) => {
+      const { setAccessToken, authApi: a } = await import('../api');
       setAccessToken(token);
-      a.me().then(r => {
-        setTokenAndUser(token, r.data.user);
-        window.history.replaceState({}, '', '/');
-        window.dispatchEvent(new PopStateEvent('popstate'));
-      }).catch(() => window.location.replace('/'));
-    });
+      for (let i = 0; i < retries; i++) {
+        try {
+          const r = await a.me();
+          setTokenAndUser(token, r.data.user);
+          window.history.replaceState({}, '', '/');
+          window.dispatchEvent(new PopStateEvent('popstate'));
+          return;
+        } catch {
+          if (i === 1) setStatus('waking');
+          if (i < retries - 1) await new Promise(res => setTimeout(res, delay));
+        }
+      }
+      window.location.replace('/');
+    };
+
+    tryLogin();
   }, [setTokenAndUser]);
 
   return (
@@ -311,7 +324,13 @@ export function OAuthCallback() {
           style={{ background: 'linear-gradient(135deg,#f9a8d4,#7ec8e3)', boxShadow: '0 8px 32px rgba(249,168,212,.5)' }}>
           <Heart className="w-7 h-7 text-white fill-white" strokeWidth={0} />
         </div>
-        <p className="text-[14px] font-semibold" style={{ color: '#b07aa0' }}>Входим...</p>
+        <div className="w-5 h-5 border-2 rounded-full animate-spin"
+          style={{ borderColor: 'rgba(232,140,196,.3)', borderTopColor: '#e88cc4' }} />
+        <p className="text-[14px] font-semibold text-center px-6" style={{ color: '#b07aa0' }}>
+          {status === 'waking'
+            ? 'Сервер просыпается, подождите ~30 секунд...'
+            : 'Входим...'}
+        </p>
       </div>
     </div>
   );
