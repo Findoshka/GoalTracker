@@ -20,14 +20,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({ user: null, loading: true });
 
   // Try to restore session on mount via refresh cookie
+  // Retries up to 5 times to handle server cold start on free Render tier
   useEffect(() => {
-    authApi.refresh()
-      .then(r => {
-        setAccessToken(r.data.accessToken);
-        return authApi.me();
-      })
-      .then(r => setState({ user: r.data.user, loading: false }))
-      .catch(() => setState({ user: null, loading: false }));
+    const tryRefresh = async (retries = 5, delay = 3000) => {
+      for (let i = 0; i < retries; i++) {
+        try {
+          const r = await authApi.refresh();
+          setAccessToken(r.data.accessToken);
+          const me = await authApi.me();
+          setState({ user: me.data.user, loading: false });
+          return;
+        } catch (err: unknown) {
+          // 401 means no valid cookie — not logged in, stop retrying
+          const status = (err as { response?: { status?: number } })?.response?.status;
+          if (status === 401 || status === 403) {
+            setState({ user: null, loading: false });
+            return;
+          }
+          // Network error / server sleeping — retry
+          if (i < retries - 1) await new Promise(res => setTimeout(res, delay));
+        }
+      }
+      setState({ user: null, loading: false });
+    };
+    tryRefresh();
   }, []);
 
   // Listen for forced logout (401 with no refresh)
