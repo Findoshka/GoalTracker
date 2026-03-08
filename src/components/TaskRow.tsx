@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Check, Trash2, CalendarDays } from 'lucide-react';
+import { playMeow } from '../utils';
 
 interface Props {
   title: string;
@@ -20,6 +21,7 @@ export function TaskRow({ title, completed, meta, goalColor, goalName, highlight
 
   const toggle = () => {
     setPop(true);
+    if (!completed) playMeow();
     onToggle();
     setTimeout(() => setPop(false), 350);
   };

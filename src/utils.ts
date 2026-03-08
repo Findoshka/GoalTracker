@@ -46,3 +46,70 @@ export function getWeeksInMonth(month: number, year: number): number {
   const totalDays = last.getDate();
   return Math.ceil((totalDays + dayOfWeek - 1) / 7);
 }
+
+// ── Cat meow sound via Web Audio API ─────────────────────────────────────────
+let _audioCtx: AudioContext | null = null;
+function getAudioCtx(): AudioContext {
+  if (!_audioCtx) _audioCtx = new AudioContext();
+  return _audioCtx;
+}
+
+export function playMeow(volume = 0.18) {
+  try {
+    const ctx = getAudioCtx();
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const now = ctx.currentTime;
+
+    // Carrier oscillator — cat-like frequency sweep
+    const osc = ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(520, now);
+    osc.frequency.linearRampToValueAtTime(780, now + 0.08);
+    osc.frequency.linearRampToValueAtTime(620, now + 0.18);
+    osc.frequency.linearRampToValueAtTime(480, now + 0.32);
+
+    // Second harmonic for warmth
+    const osc2 = ctx.createOscillator();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(1040, now);
+    osc2.frequency.linearRampToValueAtTime(1560, now + 0.08);
+    osc2.frequency.linearRampToValueAtTime(1240, now + 0.18);
+    osc2.frequency.linearRampToValueAtTime(960, now + 0.32);
+
+    // Gain envelope
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(volume, now + 0.04);
+    gain.gain.linearRampToValueAtTime(volume * 0.85, now + 0.15);
+    gain.gain.linearRampToValueAtTime(0, now + 0.38);
+
+    const gain2 = ctx.createGain();
+    gain2.gain.setValueAtTime(0, now);
+    gain2.gain.linearRampToValueAtTime(volume * 0.3, now + 0.04);
+    gain2.gain.linearRampToValueAtTime(volume * 0.2, now + 0.15);
+    gain2.gain.linearRampToValueAtTime(0, now + 0.38);
+
+    // Slight vibrato via LFO
+    const lfo = ctx.createOscillator();
+    lfo.frequency.value = 6;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 12;
+    lfo.connect(lfoGain);
+    lfoGain.connect(osc.frequency);
+
+    osc.connect(gain);
+    osc2.connect(gain2);
+    gain.connect(ctx.destination);
+    gain2.connect(ctx.destination);
+
+    lfo.start(now);
+    osc.start(now);
+    osc2.start(now);
+    lfo.stop(now + 0.4);
+    osc.stop(now + 0.4);
+    osc2.stop(now + 0.4);
+  } catch {
+    // silently ignore if audio not supported
+  }
+}

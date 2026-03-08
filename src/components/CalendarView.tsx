@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight, CalendarDays, Plus, Check } from 'lucide-react';
 import { useStore } from '../store';
-import { monthName } from '../utils';
+import { monthName, playMeow } from '../utils';
 import { GOAL_COLORS } from '../types';
 
 type CalTask =
@@ -208,6 +208,7 @@ export function CalendarView() {
                           }}
                           onClick={e => {
                             e.stopPropagation();
+                            if (!t.completed) playMeow();
                             if (t.kind === 'inbox') toggleInboxTask(t.id);
                             else toggleTask(t.goalId, t.stageId, t.weekId, t.taskId);
                           }}>
@@ -280,6 +281,7 @@ export function CalendarView() {
                   className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-all duration-150"
                   style={{ background: t.completed ? t.color : 'transparent', border:`2px solid ${t.completed ? t.color : `${t.color}60`}` }}
                   onClick={() => {
+                    if (!t.completed) playMeow();
                     if (t.kind === 'inbox') toggleInboxTask(t.id);
                     else toggleTask(t.goalId, t.stageId, t.weekId, t.taskId);
                   }}>

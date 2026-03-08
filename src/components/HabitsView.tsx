@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useStore } from '../store';
 import { HABIT_COLORS, type HabitColor, type HabitIcon } from '../types';
 import { Plus, Flame, Check, Trash2, X, Star, Heart, Zap, BookOpen, Dumbbell, Droplets, Music, Sun, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+import { playMeow } from '../utils';
 
 // ── Motivational quotes ───────────────────────────────────────────────────────
 const QUOTES = [
@@ -269,8 +270,10 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
 
   const handleToggleToday = useCallback(async () => {
     const wasDone = completionSet.has(todayKey);
-    // show toast immediately before async call to avoid re-render race
-    if (!wasDone) setShowToast(true);
+    if (!wasDone) {
+      playMeow(0.22);
+      setShowToast(true);
+    }
     await toggleHabitDate(habit.id, todayKey);
   }, [completionSet, todayKey, toggleHabitDate, habit.id]);
 
