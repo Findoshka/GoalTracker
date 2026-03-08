@@ -47,68 +47,66 @@ export function getWeeksInMonth(month: number, year: number): number {
   return Math.ceil((totalDays + dayOfWeek - 1) / 7);
 }
 
-// ── Cat meow sound via Web Audio API ─────────────────────────────────────────
+// ── Cute completion sound via Web Audio API ───────────────────────────────────
 let _audioCtx: AudioContext | null = null;
 function getAudioCtx(): AudioContext {
   if (!_audioCtx) _audioCtx = new AudioContext();
   return _audioCtx;
 }
 
-export function playMeow(volume = 0.18) {
+// Plays a soft two-note "ding-ding" — gentle and cute like a tiny bell
+export function playMeow(volume = 0.15) {
   try {
     const ctx = getAudioCtx();
     if (ctx.state === 'suspended') ctx.resume();
 
     const now = ctx.currentTime;
 
-    // Carrier oscillator — cat-like frequency sweep
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(520, now);
-    osc.frequency.linearRampToValueAtTime(780, now + 0.08);
-    osc.frequency.linearRampToValueAtTime(620, now + 0.18);
-    osc.frequency.linearRampToValueAtTime(480, now + 0.32);
+    // Helper: play one soft bell note
+    const bell = (freq: number, startAt: number, dur: number, vol: number) => {
+      // Sine + a touch of triangle for warmth
+      const osc1 = ctx.createOscillator();
+      osc1.type = 'sine';
+      osc1.frequency.value = freq;
 
-    // Second harmonic for warmth
-    const osc2 = ctx.createOscillator();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(1040, now);
-    osc2.frequency.linearRampToValueAtTime(1560, now + 0.08);
-    osc2.frequency.linearRampToValueAtTime(1240, now + 0.18);
-    osc2.frequency.linearRampToValueAtTime(960, now + 0.32);
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'triangle';
+      osc2.frequency.value = freq * 2.756; // inharmonic partial — bell-like
 
-    // Gain envelope
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(volume, now + 0.04);
-    gain.gain.linearRampToValueAtTime(volume * 0.85, now + 0.15);
-    gain.gain.linearRampToValueAtTime(0, now + 0.38);
+      const g1 = ctx.createGain();
+      g1.gain.setValueAtTime(0, startAt);
+      g1.gain.linearRampToValueAtTime(vol, startAt + 0.008);
+      g1.gain.exponentialRampToValueAtTime(vol * 0.3, startAt + dur * 0.4);
+      g1.gain.exponentialRampToValueAtTime(0.0001, startAt + dur);
 
-    const gain2 = ctx.createGain();
-    gain2.gain.setValueAtTime(0, now);
-    gain2.gain.linearRampToValueAtTime(volume * 0.3, now + 0.04);
-    gain2.gain.linearRampToValueAtTime(volume * 0.2, now + 0.15);
-    gain2.gain.linearRampToValueAtTime(0, now + 0.38);
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0, startAt);
+      g2.gain.linearRampToValueAtTime(vol * 0.18, startAt + 0.008);
+      g2.gain.exponentialRampToValueAtTime(0.0001, startAt + dur * 0.5);
 
-    // Slight vibrato via LFO
-    const lfo = ctx.createOscillator();
-    lfo.frequency.value = 6;
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 12;
-    lfo.connect(lfoGain);
-    lfoGain.connect(osc.frequency);
+      osc1.connect(g1); g1.connect(ctx.destination);
+      osc2.connect(g2); g2.connect(ctx.destination);
 
-    osc.connect(gain);
-    osc2.connect(gain2);
-    gain.connect(ctx.destination);
-    gain2.connect(ctx.destination);
+      osc1.start(startAt); osc1.stop(startAt + dur + 0.05);
+      osc2.start(startAt); osc2.stop(startAt + dur + 0.05);
+    };
 
-    lfo.start(now);
-    osc.start(now);
-    osc2.start(now);
-    lfo.stop(now + 0.4);
-    osc.stop(now + 0.4);
-    osc2.stop(now + 0.4);
+    // Two ascending notes — cheerful little "ding ding!"
+    bell(880, now,        0.55, volume);       // A5
+    bell(1174, now + 0.13, 0.6,  volume * 0.85); // D6
+
+    // Tiny sparkle shimmer on top
+    const shimmer = ctx.createOscillator();
+    shimmer.type = 'sine';
+    shimmer.frequency.setValueAtTime(2637, now + 0.12);
+    shimmer.frequency.exponentialRampToValueAtTime(3136, now + 0.22);
+    const sg = ctx.createGain();
+    sg.gain.setValueAtTime(0, now + 0.12);
+    sg.gain.linearRampToValueAtTime(volume * 0.06, now + 0.15);
+    sg.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+    shimmer.connect(sg); sg.connect(ctx.destination);
+    shimmer.start(now + 0.12); shimmer.stop(now + 0.4);
+
   } catch {
     // silently ignore if audio not supported
   }

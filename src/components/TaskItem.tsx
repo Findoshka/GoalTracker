@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { InlineEdit } from './InlineEdit';
 import type { Task, GoalColor } from '../types';
 import { GOAL_COLORS } from '../types';
+import { playMeow } from '../utils';
 
 interface Props { task: Task; goalId: string; stageId: string; weekId: string; color: GoalColor }
 
@@ -14,6 +15,7 @@ export function TaskItem({ task, goalId, stageId, weekId, color }: Props) {
 
   const toggle = () => {
     setPop(true);
+    if (!task.completed) playMeow();
     toggleTask(goalId, stageId, weekId, task.id);
     setTimeout(() => setPop(false), 350);
   };
