@@ -99,6 +99,7 @@ interface AppState {
   addTask: (goalId: string, stageId: string, weekId: string, title: string, dueDate?: string) => Promise<void>;
   toggleTask: (goalId: string, stageId: string, weekId: string, taskId: string) => Promise<void>;
   updateTask: (goalId: string, stageId: string, weekId: string, taskId: string, title: string) => Promise<void>;
+  rescheduleTask: (goalId: string, stageId: string, weekId: string, taskId: string, dueDate: string) => Promise<void>;
   deleteTask: (goalId: string, stageId: string, weekId: string, taskId: string) => Promise<void>;
   moveTask: (goalId: string, fromStageId: string, fromWeekId: string, taskId: string, toStageId: string, toWeekId: string) => Promise<void>;
 }
@@ -347,6 +348,22 @@ export const useStore = create<AppState>((set, get) => ({
           weeklyGoals: ms.weeklyGoals.map(wg => wg.id !== weekId ? wg : {
             ...wg,
             tasks: wg.tasks.map(t => t.id === taskId ? { ...t, title } : t),
+          }),
+        }),
+      }),
+    }));
+  },
+
+  rescheduleTask: async (goalId, stageId, weekId, taskId, dueDate) => {
+    await goalsApi.updateTask(goalId, stageId, weekId, taskId, { dueDate });
+    set(s => ({
+      goals: s.goals.map(g => g.id !== goalId ? g : {
+        ...g,
+        monthlyStages: g.monthlyStages.map(ms => ms.id !== stageId ? ms : {
+          ...ms,
+          weeklyGoals: ms.weeklyGoals.map(wg => wg.id !== weekId ? wg : {
+            ...wg,
+            tasks: wg.tasks.map(t => t.id === taskId ? { ...t, dueDate } : t),
           }),
         }),
       }),
