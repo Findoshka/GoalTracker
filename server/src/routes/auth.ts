@@ -58,15 +58,16 @@ async function issueTokens(userId: string, email: string, res: Response) {
   const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
   await prisma.refreshToken.create({ data: { token: refreshToken, userId, expiresAt } });
 
+  // Also set cookie as fallback for same-origin setups
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'none',
     maxAge: 30 * 24 * 60 * 60 * 1000,
-    path: '/auth/refresh',
+    path: '/',
   });
 
-  return { accessToken };
+  return { accessToken, refreshToken };
 }
 
 // ─── Email / Password Register ───────────────────────────────────────────────
@@ -81,8 +82,8 @@ router.post('/register', async (req: Request, res: Response) => {
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({ data: { email, name: name || email.split('@')[0], passwordHash } });
 
-  const { accessToken } = await issueTokens(user.id, user.email, res);
-  res.json({ accessToken, user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar } });
+  const { accessToken, refreshToken } = await issueTokens(user.id, user.email, res);
+  res.json({ accessToken, refreshToken, user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar } });
 });
 
 // ─── Email / Password Login ──────────────────────────────────────────────────
@@ -96,13 +97,14 @@ router.post('/login', async (req: Request, res: Response) => {
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) { res.status(401).json({ error: 'Invalid credentials' }); return; }
 
-  const { accessToken } = await issueTokens(user.id, user.email, res);
-  res.json({ accessToken, user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar } });
+  const { accessToken, refreshToken } = await issueTokens(user.id, user.email, res);
+  res.json({ accessToken, refreshToken, user: { id: user.id, email: user.email, name: user.name, avatar: user.avatar } });
 });
 
 // ─── Refresh Access Token ────────────────────────────────────────────────────
 router.post('/refresh', async (req: Request, res: Response) => {
-  const token = req.cookies?.refreshToken as string | undefined;
+  const token = (req.cookies?.refreshToken as string | undefined)
+    ?? (req.body?.refreshToken as string | undefined);
   if (!token) { res.status(401).json({ error: 'No refresh token' }); return; }
 
   try {
@@ -114,8 +116,8 @@ router.post('/refresh', async (req: Request, res: Response) => {
 
     // Rotate token
     await prisma.refreshToken.delete({ where: { token } });
-    const { accessToken } = await issueTokens(payload.sub, payload.email, res);
-    res.json({ accessToken });
+    const { accessToken, refreshToken: newRefresh } = await issueTokens(payload.sub, payload.email, res);
+    res.json({ accessToken, refreshToken: newRefresh });
   } catch {
     res.status(401).json({ error: 'Invalid refresh token' });
   }

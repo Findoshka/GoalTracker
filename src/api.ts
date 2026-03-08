@@ -53,14 +53,20 @@ api.interceptors.response.use(
 // ─── Auth API ────────────────────────────────────────────────────────────────
 export interface UserDTO { id: string; email: string; name: string | null; avatar: string | null }
 
+const REFRESH_KEY = 'rt';
+
+export function saveRefreshToken(token: string) { localStorage.setItem(REFRESH_KEY, token); }
+export function loadRefreshToken() { return localStorage.getItem(REFRESH_KEY); }
+export function clearRefreshToken() { localStorage.removeItem(REFRESH_KEY); }
+
 export const authApi = {
   register: (email: string, password: string, name?: string) =>
-    api.post<{ accessToken: string; user: UserDTO }>('/auth/register', { email, password, name }),
+    api.post<{ accessToken: string; refreshToken: string; user: UserDTO }>('/auth/register', { email, password, name }),
   login: (email: string, password: string) =>
-    api.post<{ accessToken: string; user: UserDTO }>('/auth/login', { email, password }),
+    api.post<{ accessToken: string; refreshToken: string; user: UserDTO }>('/auth/login', { email, password }),
   logout: () => api.post('/auth/logout'),
   me: () => api.get<{ user: UserDTO }>('/auth/me'),
-  refresh: () => api.post<{ accessToken: string }>('/auth/refresh'),
+  refresh: () => api.post<{ accessToken: string; refreshToken: string }>('/auth/refresh', { refreshToken: loadRefreshToken() }),
 };
 
 // ─── Goals API ────────────────────────────────────────────────────────────────

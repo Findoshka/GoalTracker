@@ -296,12 +296,16 @@ export function OAuthCallback() {
     if (!token) { window.location.replace('/'); return; }
 
     const tryLogin = async (retries = 8, delay = 3000) => {
-      const { setAccessToken, authApi: a } = await import('../api');
+      const { setAccessToken, saveRefreshToken, authApi: a } = await import('../api');
       setAccessToken(token);
       for (let i = 0; i < retries; i++) {
         try {
+          // Exchange access token for a proper session with refresh token
+          const refreshRes = await a.refresh();
+          saveRefreshToken(refreshRes.data.refreshToken);
+          setAccessToken(refreshRes.data.accessToken);
           const r = await a.me();
-          setTokenAndUser(token, r.data.user);
+          setTokenAndUser(refreshRes.data.accessToken, r.data.user);
           window.history.replaceState({}, '', '/');
           window.dispatchEvent(new PopStateEvent('popstate'));
           return;

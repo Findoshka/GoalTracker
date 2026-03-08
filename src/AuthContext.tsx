@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import { authApi, setAccessToken, BASE_URL, type UserDTO } from './api';
+import { authApi, setAccessToken, BASE_URL, saveRefreshToken, clearRefreshToken, type UserDTO } from './api';
 
 interface AuthState {
   user: UserDTO | null;
@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const r = await authApi.refresh();
           setAccessToken(r.data.accessToken);
+          saveRefreshToken(r.data.refreshToken);
           const me = await authApi.me();
           setState({ user: me.data.user, loading: false });
           return;
@@ -60,11 +61,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const r = await authApi.login(email, password);
+    saveRefreshToken(r.data.refreshToken);
     setTokenAndUser(r.data.accessToken, r.data.user);
   }, [setTokenAndUser]);
 
   const register = useCallback(async (email: string, password: string, name?: string) => {
     const r = await authApi.register(email, password, name);
+    saveRefreshToken(r.data.refreshToken);
     setTokenAndUser(r.data.accessToken, r.data.user);
   }, [setTokenAndUser]);
 
@@ -75,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(async () => {
     await authApi.logout().catch(() => null);
     setAccessToken(null);
+    clearRefreshToken();
     setState({ user: null, loading: false });
   }, []);
 
