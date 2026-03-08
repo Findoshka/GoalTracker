@@ -16,8 +16,8 @@ export function AddInline({ placeholder, onAdd, label }: Props) {
       <input ref={ref} value={val} onChange={(e) => setVal(e.target.value)} onBlur={commit}
         onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setVal(''); setOpen(false); } }}
         placeholder={placeholder}
-        className="w-full px-3 py-1.5 text-[13px] text-white/80 placeholder:text-white/20 rounded-xl outline-none ani-scale"
-        style={{ background:'rgba(124,58,237,.12)', border:'1px solid rgba(124,58,237,.3)' }} />
+        className="w-full px-3 py-1.5 text-[13px] rounded-xl outline-none ani-scale placeholder:text-[#c8a0c0]"
+        style={{ background:'rgba(255,182,215,.1)', border:'1px solid rgba(255,182,215,.4)', color:'#5a3a5a' }} />
     );
   }
 
