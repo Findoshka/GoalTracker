@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Heart, Mail, Lock, User, Eye, EyeOff, ArrowRight, Target, TrendingUp, CheckCircle } from 'lucide-react';
+import { Heart, Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { useAuth } from '../AuthContext';
 
 type Mode = 'login' | 'register';
@@ -64,11 +64,6 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           <div className="absolute pointer-events-none" style={{ top:'-60px', right:'-60px', width:220, height:220, borderRadius:'50%', background:'rgba(147,213,240,.25)', filter:'blur(30px)' }} />
           <div className="absolute pointer-events-none" style={{ bottom:'-40px', left:'-40px', width:200, height:200, borderRadius:'50%', background:'rgba(255,182,215,.3)', filter:'blur(25px)' }} />
 
-          {/* Cat illustration — centered */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top:'10%' }}>
-            <CatIllustration />
-          </div>
-
           {/* Paw prints — soft pink/blue */}
           {[
             { top:'4%',    left:'6%',   s:38, r:-15, o:.18, c:'#f9a8d4' },
@@ -85,57 +80,23 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             </div>
           ))}
 
-          {/* Logo */}
-          <div className="flex items-center gap-3 relative z-10">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 4px 16px rgba(255,182,215,.4)' }}>
-              <Heart className="w-5 h-5 fill-white text-white" strokeWidth={0} />
-            </div>
-            <div>
-              <div className="text-[17px] font-black leading-none" style={{ color:'#5a3a5a' }}>GoalTracker</div>
-              <div className="text-[11px] font-medium mt-0.5" style={{ color:'#b090b0' }}>твой путь к мечте</div>
-            </div>
-          </div>
-
-          {/* Headline */}
-          <div className="mt-auto mb-6 relative z-10">
-            <div className="font-black leading-[1.1] mb-3" style={{ fontSize:44, letterSpacing:'-1px', color:'#5a3a5a' }}>
-              Мечтай.<br/>
-              Планируй.<br/>
-              Достигай.
-            </div>
-            <p className="text-[14px] leading-relaxed" style={{ color:'#9070a0' }}>
-              Разбивай большие мечты на шаги<br/>и двигайся к ним каждый день.
-            </p>
-          </div>
-
-          {/* Feature list */}
-          <div className="space-y-2.5 mb-6 relative z-10">
-            {[
-              { icon: <Target className="w-4 h-4" />,      text: 'Ставь большие цели',    c:'#ffb6d9' },
-              { icon: <TrendingUp className="w-4 h-4" />,  text: 'Следи за прогрессом',   c:'#93d5f0' },
-              { icon: <CheckCircle className="w-4 h-4" />, text: 'Выполняй задачи',        c:'#ffb6d9' },
-            ].map((f, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: i % 2 === 0 ? 'rgba(255,182,215,.25)' : 'rgba(147,213,240,.25)', color: f.c }}>
-                  {f.icon}
-                </div>
-                <span className="text-[13px] font-semibold" style={{ color:'#7a5a7a' }}>{f.text}</span>
+          {/* Logo + name — top center */}
+          <div className="flex flex-col items-center gap-3 relative z-10 mb-auto">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+                style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 6px 20px rgba(255,182,215,.45)' }}>
+                <Heart className="w-6 h-6 fill-white text-white" strokeWidth={0} />
               </div>
-            ))}
+              <div>
+                <div className="text-[20px] font-black leading-none" style={{ color:'#5a3a5a' }}>GoalTracker</div>
+                <div className="text-[12px] font-medium mt-0.5" style={{ color:'#b090b0' }}>твой путь к мечте</div>
+              </div>
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="flex rounded-2xl overflow-hidden relative z-10"
-            style={{ border:'1.5px solid rgba(255,182,215,.35)', background:'rgba(255,255,255,.5)' }}>
-            {[{ num:'100%', label:'бесплатно' }, { num:'∞', label:'целей' }, { num:'24/7', label:'доступно' }].map((s, i) => (
-              <div key={s.label} className="flex-1 text-center py-3"
-                style={{ borderRight: i < 2 ? '1px solid rgba(255,182,215,.25)' : 'none' }}>
-                <div className="text-[18px] font-black leading-none" style={{ color:'#c06090' }}>{s.num}</div>
-                <div className="text-[10px] font-medium mt-0.5" style={{ color:'#b090b0' }}>{s.label}</div>
-              </div>
-            ))}
+          {/* Cat — centered, takes remaining space */}
+          <div className="flex-1 flex items-center justify-center relative z-10 py-4">
+            <CatIllustration />
           </div>
         </div>
 
