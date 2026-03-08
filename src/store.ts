@@ -369,7 +369,7 @@ export const useStore = create<AppState>((set, get) => ({
     }));
   },
 
-  moveTask: async (goalId, fromStageId, fromWeekId, taskId, toStageId, toWeekId) => {
+  moveTask: async (goalId, fromStageId, fromWeekId, taskId, _toStageId, toWeekId) => {
     // Optimistic update first for instant feel
     set(s => {
       const goal = s.goals.find(g => g.id === goalId);
