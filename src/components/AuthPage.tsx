@@ -157,50 +157,51 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             </p>
           </div>
 
-          {/* Google */}
-          <button onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-[14px] font-bold mb-5 transition-all duration-200"
-            style={{ background:'#fff', border:'1.5px solid #ecd8e8', boxShadow:'0 2px 8px rgba(200,100,160,.1)', color:'#3d1a30' }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background='#fdf5fb'; el.style.boxShadow='0 6px 20px rgba(200,100,160,.2)'; el.style.transform='translateY(-1px)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background='#fff'; el.style.boxShadow='0 2px 8px rgba(200,100,160,.1)'; el.style.transform=''; }}>
-            <GoogleIcon />
-            Войти через Google
-          </button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color:'#d4a0c0' }}>или</span>
-            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
-          </div>
-
           {/* Tabs */}
-          <div className="flex gap-2 mb-5">
+          <div className="flex rounded-2xl overflow-hidden mb-6"
+            style={{ border:'2px solid #f9a8d4' }}>
             {(['login','register'] as Mode[]).map(m => (
               <button key={m} onClick={() => setMode(m)}
-                className="flex-1 py-2.5 rounded-xl text-[13px] font-bold transition-all duration-200"
+                className="flex-1 py-3 text-[14px] font-bold transition-all duration-200"
                 style={mode === m
-                  ? { background:'linear-gradient(135deg,#f9a8d4,#c084fc)', color:'#fff', boxShadow:'0 4px 14px rgba(249,168,212,.45)' }
-                  : { background:'#faf5f9', color:'#c4a0b8', border:'1px solid #f0dce8' }}>
+                  ? { background:'linear-gradient(135deg,#f9a8d4,#c084fc)', color:'#fff' }
+                  : { background:'#fff', color:'#c4a0b8' }}>
                 {m === 'login' ? 'Войти' : 'Регистрация'}
               </button>
             ))}
           </div>
 
+          {/* Google */}
+          <button onClick={loginWithGoogle}
+            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-[14px] font-semibold mb-4 transition-all duration-200"
+            style={{ background:'#fff', border:'2px solid #f0dce8', color:'#5a2a4a' }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f9a8d4'; el.style.background='#fdf5fb'; el.style.transform='translateY(-1px)'; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f0dce8'; el.style.background='#fff'; el.style.transform=''; }}>
+            <GoogleIcon />
+            Войти через Google
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
+            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color:'#d4a0c0' }}>или</span>
+            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
+          </div>
+
           {/* Form */}
           <form onSubmit={submit} className="space-y-3">
             {mode === 'register' && (
-              <InputField icon={<User className="w-4 h-4" />} type="text"
+              <FlatInputField icon={<User className="w-[18px] h-[18px]" />} type="text"
                 placeholder="Ваше имя (необязательно)" value={name} onChange={setName} />
             )}
-            <InputField icon={<Mail className="w-4 h-4" />} type="email"
+            <FlatInputField icon={<Mail className="w-[18px] h-[18px]" />} type="email"
               placeholder="Email адрес" value={email} onChange={setEmail} required />
-            <InputField icon={<Lock className="w-4 h-4" />}
+            <FlatInputField icon={<Lock className="w-[18px] h-[18px]" />}
               type={showPwd ? 'text' : 'password'} placeholder="Пароль (минимум 6 символов)"
               value={password} onChange={setPassword} required
               suffix={
                 <button type="button" onClick={() => setShowPwd(v => !v)}
-                  className="p-1 rounded-lg shrink-0 transition-colors"
+                  className="shrink-0 px-1 transition-colors"
                   style={{ color:'#d4a0c0' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#c0628f'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#d4a0c0'; }}>
@@ -209,35 +210,36 @@ export function AuthPage({ initialMode = 'login' }: Props) {
               } />
 
             {error && (
-              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium ani-scale"
+              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium"
                 style={{ background:'rgba(251,113,133,.07)', border:'1px solid rgba(251,113,133,.3)', color:'#e11d48' }}>
                 {error}
               </div>
             )}
             {success && (
-              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium ani-scale"
+              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium"
                 style={{ background:'rgba(126,200,227,.1)', border:'1px solid rgba(126,200,227,.4)', color:'#0e7490' }}>
                 {success}
               </div>
             )}
 
             <button type="submit" disabled={loading || !email || !password}
-              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all duration-200"
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all duration-200 mt-2"
               style={{
-                background: (!email || !password) ? '#f5eef4' : 'linear-gradient(135deg,#f9a8d4,#c084fc)',
-                color: (!email || !password) ? '#d4a0c0' : '#fff',
+                background: 'linear-gradient(135deg,#f9a8d4,#c084fc)',
+                color: '#fff',
+                opacity: (!email || !password) ? 0.5 : 1,
                 boxShadow: (!email || !password) ? 'none' : '0 8px 24px rgba(249,168,212,.5)',
                 cursor: (!email || !password) ? 'not-allowed' : 'pointer',
               }}
-              onMouseEnter={e => { if (email && password) (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; }}>
+              onMouseEnter={e => { if (email && password) { (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 12px 32px rgba(249,168,212,.6)'; } }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow=(!email||!password)?'none':'0 8px 24px rgba(249,168,212,.5)'; }}>
               {loading ? <LoadingSpinner /> : (
                 <>{mode === 'login' ? 'Войти' : 'Создать аккаунт'} <ArrowRight className="w-4 h-4" /></>
               )}
             </button>
           </form>
 
-          <p className="text-center text-[13px] mt-6" style={{ color:'#b07aa0' }}>
+          <p className="text-center text-[13px] mt-5" style={{ color:'#b07aa0' }}>
             {mode === 'login' ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
             <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
               className="font-bold transition-colors"
@@ -266,29 +268,31 @@ function PawIcon({ size = 32 }: { size?: number }) {
   );
 }
 
-// ── Input field ───────────────────────────────────────────────────────────────
-function InputField({ icon, type, placeholder, value, onChange, required, suffix }: {
+// ── Flat input field with colored left bar (like reference) ──────────────────
+function FlatInputField({ icon, type, placeholder, value, onChange, required, suffix }: {
   icon: React.ReactNode; type: string; placeholder: string;
   value: string; onChange: (v: string) => void;
   required?: boolean; suffix?: React.ReactNode;
 }) {
   const [focused, setFocused] = useState(false);
   return (
-    <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200"
+    <div className="flex items-center rounded-2xl overflow-hidden transition-all duration-200"
       style={{
-        background: focused ? '#fdf5fb' : '#faf5f9',
-        border: focused ? '1.5px solid #f0a8d0' : '1.5px solid #f0dce8',
+        border: focused ? '1.5px solid #f9a8d4' : '1.5px solid #f0dce8',
         boxShadow: focused ? '0 0 0 4px rgba(249,168,212,.12)' : 'none',
+        background: '#faf5f9',
       }}>
-      <span className="shrink-0 transition-colors" style={{ color: focused ? '#e879b8' : '#d4a0c0' }}>
-        {icon}
-      </span>
+      {/* Colored left bar + icon */}
+      <div className="flex items-center justify-center w-12 h-full shrink-0 self-stretch"
+        style={{ background: focused ? 'linear-gradient(160deg,#f9a8d4,#c084fc)' : '#f0dce8', transition:'background .2s' }}>
+        <span style={{ color: focused ? '#fff' : '#d4a0c0', transition:'color .2s' }}>{icon}</span>
+      </div>
       <input type={type} placeholder={placeholder} value={value} required={required}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        className="flex-1 bg-transparent text-[14px] font-medium outline-none"
+        className="flex-1 bg-transparent text-[14px] font-medium outline-none px-3 py-4"
         style={{ color:'#3d1a30' }} />
-      {suffix}
+      {suffix && <div className="pr-3">{suffix}</div>}
     </div>
   );
 }
