@@ -22,7 +22,8 @@ export function PlansView({ onNewGoal }: Props) {
     d.setDate(d.getDate() + i);
     return d;
   });
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const _td = new Date();
+  const todayStr = `${_td.getFullYear()}-${String(_td.getMonth()+1).padStart(2,'0')}-${String(_td.getDate()).padStart(2,'0')}`;
   const dayNames = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
 
   // Global stats
@@ -63,7 +64,7 @@ export function PlansView({ onNewGoal }: Props) {
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           {days.map(d => {
-            const iso = d.toISOString().slice(0, 10);
+            const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
             const isToday = iso === todayStr;
             return (
               <button key={iso} className="flex flex-col items-center w-9 py-1 rounded-xl transition-all duration-200"

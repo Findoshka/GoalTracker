@@ -8,7 +8,8 @@ export function TodayView() {
   const { inbox, goals, addInboxTask, toggleInboxTask, deleteInboxTask, toggleTask, deleteTask } = useStore();
   const [adding, setAdding] = useState(false);
   const [draft, setDraft] = useState('');
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const _td = new Date();
+  const todayStr = `${_td.getFullYear()}-${String(_td.getMonth()+1).padStart(2,'0')}-${String(_td.getDate()).padStart(2,'0')}`;
 
   const commit = () => {
     if (draft.trim()) { addInboxTask(draft.trim(), todayStr); setDraft(''); }

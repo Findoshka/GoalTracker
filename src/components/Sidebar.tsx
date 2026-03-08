@@ -9,7 +9,8 @@ export function Sidebar({ onNewGoal, onNavigate }: Props) {
   const { goals, inbox, view, activeGoalId, setView } = useStore();
   const { user, logout } = useAuth();
   const inboxCount = inbox.filter(t => !t.completed).length;
-  const todayStr = new Date().toISOString().slice(0, 10);
+  const _td = new Date();
+  const todayStr = `${_td.getFullYear()}-${String(_td.getMonth()+1).padStart(2,'0')}-${String(_td.getDate()).padStart(2,'0')}`;
   const todayCount = inbox.filter(t => !t.completed && t.dueDate === todayStr).length;
 
   const navItem = (v: ViewMode, icon: React.ReactNode, label: string, badge?: number) => {
