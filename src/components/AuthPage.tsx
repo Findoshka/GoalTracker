@@ -59,6 +59,11 @@ export function AuthPage({ initialMode = 'login' }: Props) {
         <div className="hidden md:flex flex-col w-[420px] shrink-0 relative overflow-hidden p-12"
           style={{ background: 'linear-gradient(160deg,#f9a8d4 0%,#e879b8 45%,#c084fc 100%)' }}>
 
+          {/* Cat illustration */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <CatIllustration />
+          </div>
+
           {/* Paw prints */}
           {[
             { top:'5%',   left:'8%',   s:44, r:-15, o:.22 },
@@ -76,7 +81,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           ))}
 
           {/* Logo */}
-          <div className="flex items-center gap-3 mb-auto">
+          <div className="flex items-center gap-3 mb-auto relative z-10">
             <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
               style={{ background:'rgba(255,255,255,.25)', backdropFilter:'blur(10px)', border:'1.5px solid rgba(255,255,255,.4)' }}>
               <Heart className="w-6 h-6 text-white fill-white" strokeWidth={0} />
@@ -88,7 +93,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           </div>
 
           {/* Big headline */}
-          <div className="my-8">
+          <div className="my-8 relative z-10">
             <div className="text-white font-black leading-[1.08] mb-5" style={{ fontSize: 52, letterSpacing: '-1.5px' }}>
               Мечтай.<br/>
               Планируй.<br/>
@@ -100,7 +105,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           </div>
 
           {/* Feature list */}
-          <div className="space-y-3 mb-8">
+          <div className="space-y-3 mb-8 relative z-10">
             {[
               { icon: <Target className="w-4 h-4" />,      text: 'Ставь большие цели' },
               { icon: <TrendingUp className="w-4 h-4" />,  text: 'Следи за прогрессом' },
@@ -117,7 +122,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           </div>
 
           {/* Stats */}
-          <div className="flex gap-0 rounded-2xl overflow-hidden"
+          <div className="flex gap-0 rounded-2xl overflow-hidden relative z-10"
             style={{ border:'1px solid rgba(255,255,255,.25)' }}>
             {[{ num:'100%', label:'бесплатно' }, { num:'∞', label:'целей' }, { num:'24/7', label:'доступно' }].map((s, i) => (
               <div key={s.label} className="flex-1 text-center py-3"
@@ -162,7 +167,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             style={{ border:'2px solid #f9a8d4' }}>
             {(['login','register'] as Mode[]).map(m => (
               <button key={m} onClick={() => setMode(m)}
-                className="flex-1 py-3 text-[14px] font-bold transition-all duration-200"
+                className="flex-1 py-4 text-[16px] font-bold transition-all duration-200"
                 style={mode === m
                   ? { background:'linear-gradient(135deg,#f9a8d4,#c084fc)', color:'#fff' }
                   : { background:'#fff', color:'#c4a0b8' }}>
@@ -173,7 +178,7 @@ export function AuthPage({ initialMode = 'login' }: Props) {
 
           {/* Google */}
           <button onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-[14px] font-semibold mb-4 transition-all duration-200"
+            className="w-full flex items-center justify-center gap-3 py-5 rounded-2xl text-[16px] font-semibold mb-5 transition-all duration-200"
             style={{ background:'#fff', border:'2px solid #f0dce8', color:'#5a2a4a' }}
             onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f9a8d4'; el.style.background='#fdf5fb'; el.style.transform='translateY(-1px)'; }}
             onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f0dce8'; el.style.background='#fff'; el.style.transform=''; }}>
@@ -182,48 +187,48 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-5">
             <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
-            <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color:'#d4a0c0' }}>или</span>
+            <span className="text-[13px] font-bold uppercase tracking-widest" style={{ color:'#d4a0c0' }}>или</span>
             <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
           </div>
 
           {/* Form */}
-          <form onSubmit={submit} className="space-y-3">
+          <form onSubmit={submit} className="space-y-4">
             {mode === 'register' && (
-              <FlatInputField icon={<User className="w-[18px] h-[18px]" />} type="text"
+              <FlatInputField icon={<User className="w-5 h-5" />} type="text"
                 placeholder="Ваше имя (необязательно)" value={name} onChange={setName} />
             )}
-            <FlatInputField icon={<Mail className="w-[18px] h-[18px]" />} type="email"
+            <FlatInputField icon={<Mail className="w-5 h-5" />} type="email"
               placeholder="Email адрес" value={email} onChange={setEmail} required />
-            <FlatInputField icon={<Lock className="w-[18px] h-[18px]" />}
+            <FlatInputField icon={<Lock className="w-5 h-5" />}
               type={showPwd ? 'text' : 'password'} placeholder="Пароль (минимум 6 символов)"
               value={password} onChange={setPassword} required
               suffix={
                 <button type="button" onClick={() => setShowPwd(v => !v)}
-                  className="shrink-0 px-1 transition-colors"
+                  className="shrink-0 px-1.5 transition-colors"
                   style={{ color:'#d4a0c0' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#c0628f'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#d4a0c0'; }}>
-                  {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPwd ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               } />
 
             {error && (
-              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium"
+              <div className="px-5 py-4 rounded-2xl text-[14px] font-medium"
                 style={{ background:'rgba(251,113,133,.07)', border:'1px solid rgba(251,113,133,.3)', color:'#e11d48' }}>
                 {error}
               </div>
             )}
             {success && (
-              <div className="px-4 py-3 rounded-2xl text-[13px] font-medium"
+              <div className="px-5 py-4 rounded-2xl text-[14px] font-medium"
                 style={{ background:'rgba(126,200,227,.1)', border:'1px solid rgba(126,200,227,.4)', color:'#0e7490' }}>
                 {success}
               </div>
             )}
 
             <button type="submit" disabled={loading || !email || !password}
-              className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-[15px] font-bold transition-all duration-200 mt-2"
+              className="w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-[17px] font-bold transition-all duration-200 mt-2"
               style={{
                 background: 'linear-gradient(135deg,#f9a8d4,#c084fc)',
                 color: '#fff',
@@ -234,12 +239,12 @@ export function AuthPage({ initialMode = 'login' }: Props) {
               onMouseEnter={e => { if (email && password) { (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 12px 32px rgba(249,168,212,.6)'; } }}
               onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow=(!email||!password)?'none':'0 8px 24px rgba(249,168,212,.5)'; }}>
               {loading ? <LoadingSpinner /> : (
-                <>{mode === 'login' ? 'Войти' : 'Создать аккаунт'} <ArrowRight className="w-4 h-4" /></>
+                <>{mode === 'login' ? 'Войти' : 'Создать аккаунт'} <ArrowRight className="w-5 h-5" /></>
               )}
             </button>
           </form>
 
-          <p className="text-center text-[13px] mt-5" style={{ color:'#b07aa0' }}>
+          <p className="text-center text-[14px] mt-6" style={{ color:'#b07aa0' }}>
             {mode === 'login' ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
             <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
               className="font-bold transition-colors"
@@ -252,6 +257,51 @@ export function AuthPage({ initialMode = 'login' }: Props) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ── Cat illustration (cute, pastel style) ──────────────────────────────────────
+function CatIllustration() {
+  return (
+    <svg
+      className="w-[220px] h-[220px] opacity-90 select-none"
+      viewBox="0 0 200 200"
+      fill="none"
+      style={{ filter: 'drop-shadow(0 12px 24px rgba(0,0,0,.08))' }}
+    >
+      {/* Shadow under cat */}
+      <ellipse cx="100" cy="178" rx="55" ry="8" fill="rgba(0,0,0,.06)" />
+      {/* Body - soft rounded */}
+      <ellipse cx="100" cy="128" rx="52" ry="48" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" />
+      {/* Belly patch */}
+      <ellipse cx="100" cy="138" rx="28" ry="22" fill="rgba(255,240,250,.9)" />
+      {/* Head */}
+      <circle cx="100" cy="72" r="42" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" />
+      {/* Ears */}
+      <path d="M62 42 L78 8 L94 42 Z" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M106 42 L122 8 L138 42 Z" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M64 40 L77 12 L92 40 Z" fill="rgba(249,168,212,.25)" />
+      <path d="M108 40 L123 12 L136 40 Z" fill="rgba(249,168,212,.25)" />
+      {/* Eyes - closed happy */}
+      <path d="M78 68 Q88 76 98 68" stroke="#5a3a4a" strokeWidth="3" strokeLinecap="round" fill="none" />
+      <path d="M102 68 Q112 76 122 68" stroke="#5a3a4a" strokeWidth="3" strokeLinecap="round" fill="none" />
+      {/* Blush */}
+      <ellipse cx="72" cy="82" rx="10" ry="5" fill="rgba(249,168,212,.45)" />
+      <ellipse cx="128" cy="82" rx="10" ry="5" fill="rgba(249,168,212,.45)" />
+      {/* Nose */}
+      <path d="M100 78 L97 84 L103 84 Z" fill="#e879b8" />
+      {/* Smile */}
+      <path d="M92 88 Q100 96 108 88" stroke="#c084fc" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8" />
+      {/* Whiskers */}
+      <line x1="52" y1="74" x2="28" y2="72" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="52" y1="78" x2="26" y2="78" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="52" y1="82" x2="28" y2="84" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="148" y1="74" x2="172" y2="72" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="148" y1="78" x2="174" y2="78" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="148" y1="82" x2="172" y2="84" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
+      {/* Little heart above head */}
+      <path d="M100 28 C96 22 88 22 88 28 C88 34 100 42 100 42 C100 42 112 34 112 28 C112 22 104 22 100 28Z" fill="#f9a8d4" opacity="0.95" />
+    </svg>
   );
 }
 
@@ -276,23 +326,23 @@ function FlatInputField({ icon, type, placeholder, value, onChange, required, su
 }) {
   const [focused, setFocused] = useState(false);
   return (
-    <div className="flex items-center rounded-2xl overflow-hidden transition-all duration-200"
+    <div className="flex items-center rounded-2xl overflow-hidden transition-all duration-200 min-h-[56px]"
       style={{
         border: focused ? '1.5px solid #f9a8d4' : '1.5px solid #f0dce8',
         boxShadow: focused ? '0 0 0 4px rgba(249,168,212,.12)' : 'none',
         background: '#faf5f9',
       }}>
       {/* Colored left bar + icon */}
-      <div className="flex items-center justify-center w-12 h-full shrink-0 self-stretch"
+      <div className="flex items-center justify-center w-14 min-h-[56px] shrink-0 self-stretch"
         style={{ background: focused ? 'linear-gradient(160deg,#f9a8d4,#c084fc)' : '#f0dce8', transition:'background .2s' }}>
         <span style={{ color: focused ? '#fff' : '#d4a0c0', transition:'color .2s' }}>{icon}</span>
       </div>
       <input type={type} placeholder={placeholder} value={value} required={required}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        className="flex-1 bg-transparent text-[14px] font-medium outline-none px-3 py-4"
+        className="flex-1 bg-transparent text-[16px] font-medium outline-none px-4 py-4 min-h-[56px]"
         style={{ color:'#3d1a30' }} />
-      {suffix && <div className="pr-3">{suffix}</div>}
+      {suffix && <div className="pr-4">{suffix}</div>}
     </div>
   );
 }
@@ -308,7 +358,7 @@ function LoadingSpinner() {
 
 function GoogleIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24">
+    <svg width="20" height="20" viewBox="0 0 24 24">
       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
