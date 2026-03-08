@@ -80,22 +80,21 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             </div>
           ))}
 
-          {/* Logo + name — top center */}
-          <div className="flex flex-col items-center gap-3 relative z-10 mb-auto">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-                style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 6px 20px rgba(255,182,215,.45)' }}>
-                <Heart className="w-6 h-6 fill-white text-white" strokeWidth={0} />
+          {/* Logo + cat — vertically centered as a group */}
+          <div className="flex-1 flex flex-col items-center justify-center relative z-10 gap-5">
+            {/* Logo block */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 8px 24px rgba(255,182,215,.5)' }}>
+                <Heart className="w-7 h-7 fill-white text-white" strokeWidth={0} />
               </div>
-              <div>
-                <div className="text-[20px] font-black leading-none" style={{ color:'#5a3a5a' }}>GoalTracker</div>
-                <div className="text-[12px] font-medium mt-0.5" style={{ color:'#b090b0' }}>твой путь к мечте</div>
+              <div className="text-center">
+                <div className="text-[22px] font-black leading-none" style={{ color:'#5a3a5a' }}>GoalTracker</div>
+                <div className="text-[12px] font-medium mt-1" style={{ color:'#b090b0' }}>твой путь к мечте</div>
               </div>
             </div>
-          </div>
 
-          {/* Cat — centered, takes remaining space */}
-          <div className="flex-1 flex items-center justify-center relative z-10 py-4">
+            {/* Cat */}
             <CatIllustration />
           </div>
         </div>
