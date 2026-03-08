@@ -38,97 +38,102 @@ export function AuthPage({ initialMode = 'login' }: Props) {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4"
-      style={{ background: 'linear-gradient(135deg,#fce4f3 0%,#e8f4fd 100%)' }}>
+      style={{ background: 'linear-gradient(135deg,#fce8f3 0%,#e8f5fd 50%,#f0f8ff 100%)' }}>
 
-      {/* Blobs */}
+      {/* Animated blobs */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div style={{ position:'absolute', top:'-10%', left:'-10%', width:600, height:600, borderRadius:'50%', background:'radial-gradient(circle,rgba(249,168,212,.4) 0%,transparent 65%)', filter:'blur(60px)', animation:'auth-blob1 10s ease-in-out infinite' }} />
-        <div style={{ position:'absolute', bottom:'-10%', right:'-10%', width:500, height:500, borderRadius:'50%', background:'radial-gradient(circle,rgba(126,200,227,.35) 0%,transparent 65%)', filter:'blur(55px)', animation:'auth-blob2 13s ease-in-out infinite' }} />
-        <div style={{ position:'absolute', top:'40%', left:'40%', width:400, height:400, borderRadius:'50%', background:'radial-gradient(circle,rgba(192,132,252,.25) 0%,transparent 65%)', filter:'blur(60px)', animation:'auth-blob3 16s ease-in-out infinite' }} />
+        <div style={{ position:'absolute', top:'-8%', left:'-8%', width:550, height:550, borderRadius:'50%', background:'radial-gradient(circle,rgba(255,182,215,.5) 0%,transparent 65%)', filter:'blur(55px)', animation:'auth-blob1 10s ease-in-out infinite' }} />
+        <div style={{ position:'absolute', bottom:'-8%', right:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle,rgba(147,213,240,.45) 0%,transparent 65%)', filter:'blur(50px)', animation:'auth-blob2 13s ease-in-out infinite' }} />
+        <div style={{ position:'absolute', top:'35%', right:'15%', width:360, height:360, borderRadius:'50%', background:'radial-gradient(circle,rgba(255,200,230,.4) 0%,transparent 65%)', filter:'blur(55px)', animation:'auth-blob3 16s ease-in-out infinite' }} />
       </div>
 
       {/* Main card */}
-      <div className="relative z-10 w-full flex rounded-[40px] overflow-hidden ani-scale"
+      <div className="relative z-10 w-full flex rounded-[36px] overflow-hidden ani-scale"
         style={{
-          maxWidth: 1000,
-          minHeight: 580,
-          boxShadow: '0 40px 100px rgba(180,80,140,.2), 0 8px 40px rgba(126,200,227,.15)',
+          maxWidth: 980,
+          minHeight: 600,
+          boxShadow: '0 32px 80px rgba(200,150,180,.18), 0 8px 32px rgba(147,213,240,.18)',
+          border: '1.5px solid rgba(255,255,255,.9)',
         }}>
 
-        {/* ── LEFT: pink panel ── */}
-        <div className="hidden md:flex flex-col w-[420px] shrink-0 relative overflow-hidden p-12"
-          style={{ background: 'linear-gradient(160deg,#f9a8d4 0%,#e879b8 45%,#c084fc 100%)' }}>
+        {/* ── LEFT: soft pastel panel ── */}
+        <div className="hidden md:flex flex-col w-[420px] shrink-0 relative overflow-hidden p-10"
+          style={{ background: 'linear-gradient(160deg,#fde8f4 0%,#fce0ee 40%,#e8f5fd 100%)' }}>
 
-          {/* Cat illustration */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {/* Soft decorative circles */}
+          <div className="absolute pointer-events-none" style={{ top:'-60px', right:'-60px', width:220, height:220, borderRadius:'50%', background:'rgba(147,213,240,.25)', filter:'blur(30px)' }} />
+          <div className="absolute pointer-events-none" style={{ bottom:'-40px', left:'-40px', width:200, height:200, borderRadius:'50%', background:'rgba(255,182,215,.3)', filter:'blur(25px)' }} />
+
+          {/* Cat illustration — centered */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ top:'10%' }}>
             <CatIllustration />
           </div>
 
-          {/* Paw prints */}
+          {/* Paw prints — soft pink/blue */}
           {[
-            { top:'5%',   left:'8%',   s:44, r:-15, o:.22 },
-            { top:'8%',   right:'10%', s:30, r:20,  o:.16 },
-            { top:'35%',  left:'3%',   s:26, r:8,   o:.18 },
-            { top:'55%',  right:'5%',  s:36, r:-25, o:.20 },
-            { bottom:'25%',left:'10%', s:22, r:12,  o:.15 },
-            { bottom:'8%', left:'35%', s:48, r:-10, o:.18 },
-            { bottom:'12%',right:'8%', s:28, r:30,  o:.14 },
+            { top:'4%',    left:'6%',   s:38, r:-15, o:.18, c:'#f9a8d4' },
+            { top:'7%',    right:'8%',  s:26, r:20,  o:.14, c:'#93d5f0' },
+            { top:'38%',   left:'2%',   s:22, r:8,   o:.14, c:'#f9a8d4' },
+            { top:'58%',   right:'4%',  s:30, r:-25, o:.16, c:'#93d5f0' },
+            { bottom:'22%',left:'8%',   s:20, r:12,  o:.13, c:'#f9a8d4' },
+            { bottom:'6%', left:'32%',  s:42, r:-10, o:.15, c:'#93d5f0' },
+            { bottom:'10%',right:'6%',  s:24, r:30,  o:.12, c:'#f9a8d4' },
           ].map((p,i) => (
             <div key={i} className="absolute pointer-events-none select-none"
               style={{ top:p.top, bottom:p.bottom, left:p.left, right:p.right, opacity:p.o, transform:`rotate(${p.r}deg)` }}>
-              <PawIcon size={p.s} />
+              <PawIcon size={p.s} color={p.c} />
             </div>
           ))}
 
           {/* Logo */}
-          <div className="flex items-center gap-3 mb-auto relative z-10">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-              style={{ background:'rgba(255,255,255,.25)', backdropFilter:'blur(10px)', border:'1.5px solid rgba(255,255,255,.4)' }}>
-              <Heart className="w-6 h-6 text-white fill-white" strokeWidth={0} />
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0"
+              style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 4px 16px rgba(255,182,215,.4)' }}>
+              <Heart className="w-5 h-5 fill-white text-white" strokeWidth={0} />
             </div>
             <div>
-              <div className="text-[18px] font-black text-white leading-none">GoalTracker</div>
-              <div className="text-[12px] text-white/70 font-medium mt-0.5">твой путь к мечте</div>
+              <div className="text-[17px] font-black leading-none" style={{ color:'#5a3a5a' }}>GoalTracker</div>
+              <div className="text-[11px] font-medium mt-0.5" style={{ color:'#b090b0' }}>твой путь к мечте</div>
             </div>
           </div>
 
-          {/* Big headline */}
-          <div className="my-8 relative z-10">
-            <div className="text-white font-black leading-[1.08] mb-5" style={{ fontSize: 52, letterSpacing: '-1.5px' }}>
+          {/* Headline */}
+          <div className="mt-auto mb-6 relative z-10">
+            <div className="font-black leading-[1.1] mb-3" style={{ fontSize:44, letterSpacing:'-1px', color:'#5a3a5a' }}>
               Мечтай.<br/>
               Планируй.<br/>
               Достигай.
             </div>
-            <p className="text-white/75 text-[15px] leading-relaxed">
-              Разбивай большие мечты на шаги и двигайся к ним каждый день.
+            <p className="text-[14px] leading-relaxed" style={{ color:'#9070a0' }}>
+              Разбивай большие мечты на шаги<br/>и двигайся к ним каждый день.
             </p>
           </div>
 
           {/* Feature list */}
-          <div className="space-y-3 mb-8 relative z-10">
+          <div className="space-y-2.5 mb-6 relative z-10">
             {[
-              { icon: <Target className="w-4 h-4" />,      text: 'Ставь большие цели' },
-              { icon: <TrendingUp className="w-4 h-4" />,  text: 'Следи за прогрессом' },
-              { icon: <CheckCircle className="w-4 h-4" />, text: 'Выполняй задачи' },
+              { icon: <Target className="w-4 h-4" />,      text: 'Ставь большие цели',    c:'#ffb6d9' },
+              { icon: <TrendingUp className="w-4 h-4" />,  text: 'Следи за прогрессом',   c:'#93d5f0' },
+              { icon: <CheckCircle className="w-4 h-4" />, text: 'Выполняй задачи',        c:'#ffb6d9' },
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-white"
-                  style={{ background:'rgba(255,255,255,.2)', border:'1px solid rgba(255,255,255,.3)' }}>
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ background: i % 2 === 0 ? 'rgba(255,182,215,.25)' : 'rgba(147,213,240,.25)', color: f.c }}>
                   {f.icon}
                 </div>
-                <span className="text-white/85 text-[14px] font-medium">{f.text}</span>
+                <span className="text-[13px] font-semibold" style={{ color:'#7a5a7a' }}>{f.text}</span>
               </div>
             ))}
           </div>
 
           {/* Stats */}
-          <div className="flex gap-0 rounded-2xl overflow-hidden relative z-10"
-            style={{ border:'1px solid rgba(255,255,255,.25)' }}>
+          <div className="flex rounded-2xl overflow-hidden relative z-10"
+            style={{ border:'1.5px solid rgba(255,182,215,.35)', background:'rgba(255,255,255,.5)' }}>
             {[{ num:'100%', label:'бесплатно' }, { num:'∞', label:'целей' }, { num:'24/7', label:'доступно' }].map((s, i) => (
               <div key={s.label} className="flex-1 text-center py-3"
-                style={{ borderRight: i < 2 ? '1px solid rgba(255,255,255,.2)' : 'none', background:'rgba(255,255,255,.1)' }}>
-                <div className="text-[20px] font-black text-white leading-none">{s.num}</div>
-                <div className="text-[11px] text-white/65 font-medium mt-0.5">{s.label}</div>
+                style={{ borderRight: i < 2 ? '1px solid rgba(255,182,215,.25)' : 'none' }}>
+                <div className="text-[18px] font-black leading-none" style={{ color:'#c06090' }}>{s.num}</div>
+                <div className="text-[10px] font-medium mt-0.5" style={{ color:'#b090b0' }}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -136,26 +141,26 @@ export function AuthPage({ initialMode = 'login' }: Props) {
 
         {/* ── RIGHT: form panel ── */}
         <div className="flex-1 flex flex-col justify-center px-8 py-10 md:px-12"
-          style={{ background:'#fff' }}>
+          style={{ background:'rgba(255,255,255,.97)' }}>
 
           {/* Mobile logo */}
           <div className="flex items-center gap-3 mb-8 md:hidden">
             <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
-              style={{ background:'linear-gradient(135deg,#f9a8d4,#c084fc)', boxShadow:'0 6px 20px rgba(249,168,212,.4)' }}>
-              <Heart className="w-5 h-5 text-white fill-white" strokeWidth={0} />
+              style={{ background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', boxShadow:'0 4px 16px rgba(255,182,215,.4)' }}>
+              <Heart className="w-5 h-5 fill-white text-white" strokeWidth={0} />
             </div>
             <div>
-              <div className="text-[18px] font-black" style={{ color:'#3d1a30' }}>GoalTracker</div>
-              <div className="text-[12px]" style={{ color:'#c4a0b8' }}>твой путь к мечте</div>
+              <div className="text-[18px] font-black" style={{ color:'#5a3a5a' }}>GoalTracker</div>
+              <div className="text-[12px]" style={{ color:'#b090b0' }}>твой путь к мечте</div>
             </div>
           </div>
 
           {/* Heading */}
-          <div className="mb-8">
-            <h2 className="text-[30px] font-black mb-1.5" style={{ color:'#3d1a30' }}>
+          <div className="mb-7">
+            <h2 className="text-[28px] font-black mb-1.5" style={{ color:'#5a3a5a' }}>
               {mode === 'login' ? 'С возвращением' : 'Создать аккаунт'}
             </h2>
-            <p className="text-[14px]" style={{ color:'#b07aa0' }}>
+            <p className="text-[14px]" style={{ color:'#a080a0' }}>
               {mode === 'login'
                 ? 'Войдите, чтобы продолжить работу над целями'
                 : 'Зарегистрируйтесь — это займёт секунду'}
@@ -163,14 +168,14 @@ export function AuthPage({ initialMode = 'login' }: Props) {
           </div>
 
           {/* Tabs */}
-          <div className="flex rounded-2xl overflow-hidden mb-6"
-            style={{ border:'2px solid #f9a8d4' }}>
+          <div className="flex rounded-2xl overflow-hidden mb-5 p-1"
+            style={{ background:'#f8eef6', border:'1.5px solid #f5d8ee' }}>
             {(['login','register'] as Mode[]).map(m => (
               <button key={m} onClick={() => setMode(m)}
-                className="flex-1 py-4 text-[16px] font-bold transition-all duration-200"
+                className="flex-1 py-3.5 text-[15px] font-bold rounded-xl transition-all duration-200"
                 style={mode === m
-                  ? { background:'linear-gradient(135deg,#f9a8d4,#c084fc)', color:'#fff' }
-                  : { background:'#fff', color:'#c4a0b8' }}>
+                  ? { background:'linear-gradient(135deg,#ffb6d9,#93d5f0)', color:'#fff', boxShadow:'0 4px 12px rgba(255,182,215,.4)' }
+                  : { background:'transparent', color:'#b090b0' }}>
                 {m === 'login' ? 'Войти' : 'Регистрация'}
               </button>
             ))}
@@ -178,23 +183,23 @@ export function AuthPage({ initialMode = 'login' }: Props) {
 
           {/* Google */}
           <button onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center gap-3 py-5 rounded-2xl text-[16px] font-semibold mb-5 transition-all duration-200"
-            style={{ background:'#fff', border:'2px solid #f0dce8', color:'#5a2a4a' }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f9a8d4'; el.style.background='#fdf5fb'; el.style.transform='translateY(-1px)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#f0dce8'; el.style.background='#fff'; el.style.transform=''; }}>
+            className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl text-[15px] font-semibold mb-4 transition-all duration-200"
+            style={{ background:'#fff', border:'1.5px solid #e8d8f0', color:'#5a3a5a', boxShadow:'0 2px 8px rgba(200,150,200,.1)' }}
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#ffb6d9'; el.style.background='#fff8fc'; el.style.transform='translateY(-1px)'; el.style.boxShadow='0 6px 20px rgba(255,182,215,.2)'; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.borderColor='#e8d8f0'; el.style.background='#fff'; el.style.transform=''; el.style.boxShadow='0 2px 8px rgba(200,150,200,.1)'; }}>
             <GoogleIcon />
             Войти через Google
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
-            <span className="text-[13px] font-bold uppercase tracking-widest" style={{ color:'#d4a0c0' }}>или</span>
-            <div className="flex-1 h-px" style={{ background:'#f0dce8' }} />
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px" style={{ background:'linear-gradient(90deg,transparent,#f0d8e8)' }} />
+            <span className="text-[12px] font-semibold uppercase tracking-wider" style={{ color:'#c8a0c0' }}>или</span>
+            <div className="flex-1 h-px" style={{ background:'linear-gradient(90deg,#f0d8e8,transparent)' }} />
           </div>
 
           {/* Form */}
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={submit} className="space-y-3.5">
             {mode === 'register' && (
               <FlatInputField icon={<User className="w-5 h-5" />} type="text"
                 placeholder="Ваше имя (необязательно)" value={name} onChange={setName} />
@@ -207,50 +212,52 @@ export function AuthPage({ initialMode = 'login' }: Props) {
               suffix={
                 <button type="button" onClick={() => setShowPwd(v => !v)}
                   className="shrink-0 px-1.5 transition-colors"
-                  style={{ color:'#d4a0c0' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#c0628f'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#d4a0c0'; }}>
+                  style={{ color:'#c8a0c0' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#a06090'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#c8a0c0'; }}>
                   {showPwd ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               } />
 
             {error && (
-              <div className="px-5 py-4 rounded-2xl text-[14px] font-medium"
-                style={{ background:'rgba(251,113,133,.07)', border:'1px solid rgba(251,113,133,.3)', color:'#e11d48' }}>
+              <div className="px-4 py-3.5 rounded-2xl text-[13px] font-medium"
+                style={{ background:'rgba(251,113,133,.06)', border:'1px solid rgba(251,113,133,.25)', color:'#e11d48' }}>
                 {error}
               </div>
             )}
             {success && (
-              <div className="px-5 py-4 rounded-2xl text-[14px] font-medium"
-                style={{ background:'rgba(126,200,227,.1)', border:'1px solid rgba(126,200,227,.4)', color:'#0e7490' }}>
+              <div className="px-4 py-3.5 rounded-2xl text-[13px] font-medium"
+                style={{ background:'rgba(147,213,240,.12)', border:'1px solid rgba(147,213,240,.4)', color:'#0e7490' }}>
                 {success}
               </div>
             )}
 
             <button type="submit" disabled={loading || !email || !password}
-              className="w-full flex items-center justify-center gap-2 py-5 rounded-2xl text-[17px] font-bold transition-all duration-200 mt-2"
+              className="w-full flex items-center justify-center gap-2 py-4.5 rounded-2xl text-[16px] font-bold transition-all duration-200 mt-1"
               style={{
-                background: 'linear-gradient(135deg,#f9a8d4,#c084fc)',
+                background: 'linear-gradient(135deg,#ffb6d9 0%,#d4a0f0 50%,#93d5f0 100%)',
                 color: '#fff',
-                opacity: (!email || !password) ? 0.5 : 1,
-                boxShadow: (!email || !password) ? 'none' : '0 8px 24px rgba(249,168,212,.5)',
+                opacity: (!email || !password) ? 0.55 : 1,
+                boxShadow: (!email || !password) ? 'none' : '0 8px 24px rgba(255,182,215,.45)',
                 cursor: (!email || !password) ? 'not-allowed' : 'pointer',
+                paddingTop: '14px',
+                paddingBottom: '14px',
               }}
-              onMouseEnter={e => { if (email && password) { (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 12px 32px rgba(249,168,212,.6)'; } }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow=(!email||!password)?'none':'0 8px 24px rgba(249,168,212,.5)'; }}>
+              onMouseEnter={e => { if (email && password) { (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 12px 32px rgba(255,182,215,.55)'; } }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow=(!email||!password)?'none':'0 8px 24px rgba(255,182,215,.45)'; }}>
               {loading ? <LoadingSpinner /> : (
                 <>{mode === 'login' ? 'Войти' : 'Создать аккаунт'} <ArrowRight className="w-5 h-5" /></>
               )}
             </button>
           </form>
 
-          <p className="text-center text-[14px] mt-6" style={{ color:'#b07aa0' }}>
+          <p className="text-center text-[13px] mt-5" style={{ color:'#a080a0' }}>
             {mode === 'login' ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
             <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
               className="font-bold transition-colors"
-              style={{ color:'#e879b8' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#c0628f'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#e879b8'; }}>
+              style={{ color:'#d080b0' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#a06090'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#d080b0'; }}>
               {mode === 'login' ? 'Зарегистрироваться' : 'Войти'}
             </button>
           </p>
@@ -260,55 +267,62 @@ export function AuthPage({ initialMode = 'login' }: Props) {
   );
 }
 
-// ── Cat illustration (cute, pastel style) ──────────────────────────────────────
+// ── Cat illustration (soft pastel pink+blue style) ────────────────────────────
 function CatIllustration() {
   return (
     <svg
-      className="w-[220px] h-[220px] opacity-90 select-none"
+      className="w-[240px] h-[240px] select-none"
       viewBox="0 0 200 200"
       fill="none"
-      style={{ filter: 'drop-shadow(0 12px 24px rgba(0,0,0,.08))' }}
+      style={{ filter: 'drop-shadow(0 16px 32px rgba(200,150,180,.2))' }}
     >
-      {/* Shadow under cat */}
-      <ellipse cx="100" cy="178" rx="55" ry="8" fill="rgba(0,0,0,.06)" />
-      {/* Body - soft rounded */}
-      <ellipse cx="100" cy="128" rx="52" ry="48" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" />
-      {/* Belly patch */}
-      <ellipse cx="100" cy="138" rx="28" ry="22" fill="rgba(255,240,250,.9)" />
+      {/* Shadow */}
+      <ellipse cx="100" cy="182" rx="52" ry="7" fill="rgba(180,130,160,.1)" />
+      {/* Body */}
+      <ellipse cx="100" cy="130" rx="50" ry="46" fill="rgba(255,255,255,.95)" />
+      {/* Belly — soft blue tint */}
+      <ellipse cx="100" cy="140" rx="27" ry="21" fill="rgba(220,242,252,.8)" />
       {/* Head */}
-      <circle cx="100" cy="72" r="42" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" />
-      {/* Ears */}
-      <path d="M62 42 L78 8 L94 42 Z" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M106 42 L122 8 L138 42 Z" fill="#fff" stroke="rgba(255,255,255,.6)" strokeWidth="2" strokeLinejoin="round" />
-      <path d="M64 40 L77 12 L92 40 Z" fill="rgba(249,168,212,.25)" />
-      <path d="M108 40 L123 12 L136 40 Z" fill="rgba(249,168,212,.25)" />
-      {/* Eyes - closed happy */}
-      <path d="M78 68 Q88 76 98 68" stroke="#5a3a4a" strokeWidth="3" strokeLinecap="round" fill="none" />
-      <path d="M102 68 Q112 76 122 68" stroke="#5a3a4a" strokeWidth="3" strokeLinecap="round" fill="none" />
-      {/* Blush */}
-      <ellipse cx="72" cy="82" rx="10" ry="5" fill="rgba(249,168,212,.45)" />
-      <ellipse cx="128" cy="82" rx="10" ry="5" fill="rgba(249,168,212,.45)" />
-      {/* Nose */}
-      <path d="M100 78 L97 84 L103 84 Z" fill="#e879b8" />
-      {/* Smile */}
-      <path d="M92 88 Q100 96 108 88" stroke="#c084fc" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.8" />
-      {/* Whiskers */}
-      <line x1="52" y1="74" x2="28" y2="72" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      <line x1="52" y1="78" x2="26" y2="78" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      <line x1="52" y1="82" x2="28" y2="84" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      <line x1="148" y1="74" x2="172" y2="72" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      <line x1="148" y1="78" x2="174" y2="78" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      <line x1="148" y1="82" x2="172" y2="84" stroke="rgba(90,58,74,.35)" strokeWidth="1.2" strokeLinecap="round" />
-      {/* Little heart above head */}
-      <path d="M100 28 C96 22 88 22 88 28 C88 34 100 42 100 42 C100 42 112 34 112 28 C112 22 104 22 100 28Z" fill="#f9a8d4" opacity="0.95" />
+      <circle cx="100" cy="74" r="41" fill="rgba(255,255,255,.95)" />
+      {/* Ears outer */}
+      <path d="M63 44 L79 10 L95 44 Z" fill="rgba(255,255,255,.95)" strokeLinejoin="round" />
+      <path d="M105 44 L121 10 L137 44 Z" fill="rgba(255,255,255,.95)" strokeLinejoin="round" />
+      {/* Ears inner — pink */}
+      <path d="M66 42 L79 14 L92 42 Z" fill="rgba(255,182,215,.4)" />
+      <path d="M108 42 L121 14 L134 42 Z" fill="rgba(255,182,215,.4)" />
+      {/* Eyes — happy closed arcs */}
+      <path d="M78 70 Q88 79 98 70" stroke="#8a6a8a" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+      <path d="M102 70 Q112 79 122 70" stroke="#8a6a8a" strokeWidth="2.8" strokeLinecap="round" fill="none" />
+      {/* Blush — pink */}
+      <ellipse cx="72" cy="84" rx="11" ry="5.5" fill="rgba(255,182,215,.5)" />
+      <ellipse cx="128" cy="84" rx="11" ry="5.5" fill="rgba(255,182,215,.5)" />
+      {/* Nose — soft pink */}
+      <path d="M100 80 L97 86 L103 86 Z" fill="#ffb6d9" />
+      {/* Smile — blue tint */}
+      <path d="M93 90 Q100 97 107 90" stroke="#93d5f0" strokeWidth="2" strokeLinecap="round" fill="none" />
+      {/* Whiskers — very soft */}
+      <line x1="54" y1="76" x2="30" y2="74" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="54" y1="80" x2="28" y2="80" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="54" y1="84" x2="30" y2="86" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="146" y1="76" x2="170" y2="74" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="146" y1="80" x2="172" y2="80" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="146" y1="84" x2="170" y2="86" stroke="rgba(140,100,130,.22)" strokeWidth="1.2" strokeLinecap="round" />
+      {/* Heart above — pink+blue gradient effect via two overlapping */}
+      <path d="M100 30 C96 23 87 23 87 30 C87 37 100 44 100 44 C100 44 113 37 113 30 C113 23 104 23 100 30Z" fill="#ffb6d9" opacity="0.9" />
+      <path d="M100 30 C100 30 104 35 100 44 C100 44 113 37 113 30 C113 23 104 23 100 30Z" fill="#93d5f0" opacity="0.45" />
+      {/* Small stars / sparkles */}
+      <circle cx="58" cy="50" r="2" fill="#ffb6d9" opacity="0.6" />
+      <circle cx="142" cy="48" r="2" fill="#93d5f0" opacity="0.6" />
+      <circle cx="50" cy="100" r="1.5" fill="#ffb6d9" opacity="0.5" />
+      <circle cx="150" cy="105" r="1.5" fill="#93d5f0" opacity="0.5" />
     </svg>
   );
 }
 
 // ── Paw SVG ───────────────────────────────────────────────────────────────────
-function PawIcon({ size = 32 }: { size?: number }) {
+function PawIcon({ size = 32, color = '#ffb6d9' }: { size?: number; color?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" fill="white">
+    <svg width={size} height={size} viewBox="0 0 64 64" fill={color}>
       <ellipse cx="20" cy="13" rx="7" ry="9" />
       <ellipse cx="44" cy="13" rx="7" ry="9" />
       <ellipse cx="9"  cy="29" rx="6" ry="8" />
@@ -318,7 +332,7 @@ function PawIcon({ size = 32 }: { size?: number }) {
   );
 }
 
-// ── Flat input field with colored left bar (like reference) ──────────────────
+// ── Flat input field with colored left bar ────────────────────────────────────
 function FlatInputField({ icon, type, placeholder, value, onChange, required, suffix }: {
   icon: React.ReactNode; type: string; placeholder: string;
   value: string; onChange: (v: string) => void;
@@ -328,20 +342,20 @@ function FlatInputField({ icon, type, placeholder, value, onChange, required, su
   return (
     <div className="flex items-center rounded-2xl overflow-hidden transition-all duration-200 min-h-[56px]"
       style={{
-        border: focused ? '1.5px solid #f9a8d4' : '1.5px solid #f0dce8',
-        boxShadow: focused ? '0 0 0 4px rgba(249,168,212,.12)' : 'none',
-        background: '#faf5f9',
+        border: focused ? '1.5px solid #ffb6d9' : '1.5px solid #f0e0ee',
+        boxShadow: focused ? '0 0 0 4px rgba(255,182,215,.14)' : 'none',
+        background: '#fdf6fb',
       }}>
       {/* Colored left bar + icon */}
       <div className="flex items-center justify-center w-14 min-h-[56px] shrink-0 self-stretch"
-        style={{ background: focused ? 'linear-gradient(160deg,#f9a8d4,#c084fc)' : '#f0dce8', transition:'background .2s' }}>
-        <span style={{ color: focused ? '#fff' : '#d4a0c0', transition:'color .2s' }}>{icon}</span>
+        style={{ background: focused ? 'linear-gradient(160deg,#ffb6d9,#93d5f0)' : '#f5e0f0', transition:'background .25s' }}>
+        <span style={{ color: focused ? '#fff' : '#c8a0c0', transition:'color .25s' }}>{icon}</span>
       </div>
       <input type={type} placeholder={placeholder} value={value} required={required}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-        className="flex-1 bg-transparent text-[16px] font-medium outline-none px-4 py-4 min-h-[56px]"
-        style={{ color:'#3d1a30' }} />
+        className="flex-1 bg-transparent text-[15px] font-medium outline-none px-4 py-4 min-h-[56px]"
+        style={{ color:'#5a3a5a' }} />
       {suffix && <div className="pr-4">{suffix}</div>}
     </div>
   );
