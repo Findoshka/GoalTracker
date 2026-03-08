@@ -37,115 +37,76 @@ export function AuthPage({ initialMode = 'login' }: Props) {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center overflow-hidden relative"
-      style={{ background: 'linear-gradient(135deg,#fce4f3 0%,#e8f4fd 50%,#fce4f3 100%)' }}>
+    <div className="min-h-screen w-full flex items-center justify-center"
+      style={{ background: 'linear-gradient(135deg,#fce4f3 0%,#e8f4fd 100%)' }}>
 
-      {/* ── Animated blobs ── */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="auth-blob" style={{
-          top: '-20%', left: '-15%', width: 750, height: 750,
-          background: 'radial-gradient(circle, rgba(249,168,212,.55) 0%, rgba(249,168,212,.08) 50%, transparent 68%)',
-          animation: 'auth-blob1 10s ease-in-out infinite',
-        }} />
-        <div className="auth-blob" style={{
-          bottom: '-20%', right: '-15%', width: 700, height: 700,
-          background: 'radial-gradient(circle, rgba(126,200,227,.5) 0%, rgba(126,200,227,.06) 50%, transparent 68%)',
-          animation: 'auth-blob2 13s ease-in-out infinite',
-        }} />
-        <div className="auth-blob" style={{
-          top: '10%', right: '10%', width: 380, height: 380,
-          background: 'radial-gradient(circle, rgba(253,186,232,.45) 0%, transparent 68%)',
-          animation: 'auth-blob3 16s ease-in-out infinite',
-        }} />
-        <div className="auth-blob" style={{
-          bottom: '5%', left: '15%', width: 320, height: 320,
-          background: 'radial-gradient(circle, rgba(186,230,255,.45) 0%, transparent 68%)',
-          animation: 'auth-blob1 12s ease-in-out 2s infinite reverse',
-        }} />
-      </div>
+      {/* Card */}
+      <div className="w-full max-w-[860px] mx-4 rounded-[36px] overflow-hidden flex shadow-2xl ani-scale"
+        style={{ boxShadow: '0 32px 80px rgba(180,80,140,.22), 0 8px 32px rgba(126,200,227,.15)', minHeight: 520 }}>
 
-      {/* ── Card ── */}
-      <div className="relative z-10 w-full max-w-[920px] mx-auto px-4 flex items-center justify-center gap-16">
+        {/* ── LEFT PANEL ── */}
+        <div className="hidden md:flex flex-col items-center justify-between w-[340px] shrink-0 p-10 relative overflow-hidden"
+          style={{ background: 'linear-gradient(160deg,#f9a8d4 0%,#e879b8 50%,#c084fc 100%)' }}>
 
-        {/* Left: brand */}
-        <div className="hidden lg:flex flex-col gap-8 flex-1 max-w-[380px] ani-left">
-          {/* Logo */}
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-3xl flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg,#f9a8d4,#7ec8e3)', boxShadow: '0 12px 36px rgba(249,168,212,.6)' }}>
-              <Heart className="w-7 h-7 text-white fill-white" strokeWidth={0} />
+          {/* Paw prints decoration */}
+          {[
+            { top: '6%',  left: '10%',  size: 38, rotate: -20, opacity: 0.25 },
+            { top: '12%', right: '8%',  size: 28, rotate: 15,  opacity: 0.18 },
+            { top: '38%', left: '5%',   size: 22, rotate: 5,   opacity: 0.20 },
+            { bottom: '32%', right: '6%', size: 32, rotate: -10, opacity: 0.22 },
+            { bottom: '10%', left: '12%', size: 42, rotate: 25,  opacity: 0.20 },
+            { bottom: '18%', right: '15%',size: 24, rotate: -30, opacity: 0.16 },
+          ].map((p, i) => (
+            <div key={i} className="absolute pointer-events-none"
+              style={{ top: p.top, bottom: p.bottom, left: p.left, right: p.right, opacity: p.opacity, transform: `rotate(${p.rotate}deg)` }}>
+              <PawIcon size={p.size} color="#fff" />
             </div>
-            <div>
-              <div className="text-[22px] font-black" style={{ color: '#4a1a3a' }}>GoalTracker</div>
-              <div className="text-[13px] font-medium" style={{ color: '#c4a0b8' }}>твой путь к мечте</div>
+          ))}
+
+          {/* Logo top */}
+          <div className="flex items-center gap-3 self-start relative z-10">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,.25)', backdropFilter: 'blur(10px)' }}>
+              <Heart className="w-5 h-5 text-white fill-white" strokeWidth={0} />
             </div>
+            <span className="text-[16px] font-black text-white">GoalTracker</span>
           </div>
 
-          {/* Headline */}
-          <div>
-            <div className="font-black leading-[1.05] mb-4"
-              style={{ fontSize: 58, color: '#4a1a3a', letterSpacing: '-1.5px' }}>
-              Мечтай.<br />
-              <span className="glow-text">Планируй.</span><br />
-              <span style={{ color: '#7ec8e3' }}>Достигай.</span>
-            </div>
-            <p className="text-[16px] leading-relaxed" style={{ color: '#9a6080' }}>
-              Разбивай большие мечты на конкретные шаги и двигайся к ним каждый день.
+          {/* Cat illustration */}
+          <div className="relative z-10 flex flex-col items-center gap-4">
+            <CatIllustration />
+            <p className="text-white/80 text-[14px] font-medium text-center leading-relaxed">
+              твой путь к мечте
             </p>
           </div>
 
-          {/* Stats */}
-          <div className="flex gap-8">
+          {/* Stats bottom */}
+          <div className="flex gap-6 relative z-10 self-stretch">
             {[{ num:'100%', label:'бесплатно' }, { num:'∞', label:'целей' }, { num:'24/7', label:'доступно' }].map(s => (
-              <div key={s.label}>
-                <div className="text-[26px] font-black" style={{ color: '#c0628f' }}>{s.num}</div>
-                <div className="text-[12px] font-medium" style={{ color: '#c4a0b8' }}>{s.label}</div>
+              <div key={s.label} className="flex-1 text-center">
+                <div className="text-[20px] font-black text-white">{s.num}</div>
+                <div className="text-[11px] text-white/70 font-medium">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: form */}
-        <div className="w-full max-w-[420px] shrink-0 rounded-[32px] px-9 py-9 ani-scale"
-          style={{
-            background: 'rgba(255,255,255,.72)',
-            backdropFilter: 'blur(40px)',
-            WebkitBackdropFilter: 'blur(40px)',
-            border: '1.5px solid rgba(255,255,255,.95)',
-            boxShadow: '0 40px 100px rgba(180,80,140,.22), 0 8px 32px rgba(180,80,140,.1)',
-          }}>
+        {/* ── RIGHT PANEL ── */}
+        <div className="flex-1 flex flex-col justify-center px-8 py-10 md:px-10"
+          style={{ background: '#fff' }}>
 
           {/* Mobile logo */}
-          <div className="flex items-center gap-3 mb-7 lg:hidden">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#f9a8d4,#7ec8e3)', boxShadow: '0 6px 20px rgba(249,168,212,.5)' }}>
+          <div className="flex items-center gap-3 mb-8 md:hidden">
+            <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg,#f9a8d4,#7ec8e3)' }}>
               <Heart className="w-5 h-5 text-white fill-white" strokeWidth={0} />
             </div>
-            <div>
-              <div className="text-[18px] font-black" style={{ color: '#4a1a3a' }}>GoalTracker</div>
-              <div className="text-[12px]" style={{ color: '#c4a0b8' }}>твой путь к мечте</div>
-            </div>
-          </div>
-
-          {/* Mode tabs */}
-          <div className="flex rounded-2xl p-1 mb-7"
-            style={{ background: 'rgba(249,168,212,.1)', border: '1px solid rgba(249,168,212,.2)' }}>
-            {(['login', 'register'] as Mode[]).map(m => (
-              <button key={m} onClick={() => setMode(m)}
-                className="flex-1 py-2.5 rounded-xl text-[14px] font-bold transition-all duration-200"
-                style={mode === m ? {
-                  background: 'linear-gradient(135deg,#f9a8d4,#a8d8ea)',
-                  color: '#fff',
-                  boxShadow: '0 4px 16px rgba(249,168,212,.4)',
-                } : { color: '#c4a0b8' }}>
-                {m === 'login' ? 'Войти' : 'Регистрация'}
-              </button>
-            ))}
+            <span className="text-[18px] font-black" style={{ color: '#4a1a3a' }}>GoalTracker</span>
           </div>
 
           {/* Heading */}
-          <div className="mb-6">
-            <h2 className="text-[24px] font-black mb-1" style={{ color: '#4a1a3a' }}>
+          <div className="mb-7">
+            <h2 className="text-[28px] font-black mb-1" style={{ color: '#3d1a30' }}>
               {mode === 'login' ? 'С возвращением' : 'Создать аккаунт'}
             </h2>
             <p className="text-[13px]" style={{ color: '#b07aa0' }}>
@@ -157,34 +118,53 @@ export function AuthPage({ initialMode = 'login' }: Props) {
 
           {/* Google */}
           <button onClick={loginWithGoogle}
-            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-[14px] font-bold mb-4 transition-all duration-200"
+            className="w-full flex items-center justify-center gap-3 py-3.5 rounded-2xl text-[14px] font-bold mb-5 transition-all duration-200"
             style={{
-              background: 'rgba(255,255,255,.9)',
-              border: '1.5px solid rgba(240,168,208,.35)',
-              boxShadow: '0 4px 14px rgba(240,168,208,.18)',
-              color: '#5a2a4a',
+              background: '#fff',
+              border: '1.5px solid #e8d0e4',
+              boxShadow: '0 2px 8px rgba(240,168,208,.15)',
+              color: '#3d1a30',
             }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.transform='translateY(-2px)'; el.style.boxShadow='0 10px 28px rgba(240,168,208,.36)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform=''; el.style.boxShadow='0 4px 14px rgba(240,168,208,.18)'; }}>
+            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background='#fdf0f8'; el.style.boxShadow='0 6px 20px rgba(240,168,208,.3)'; el.style.transform='translateY(-1px)'; }}
+            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background='#fff'; el.style.boxShadow='0 2px 8px rgba(240,168,208,.15)'; el.style.transform=''; }}>
             <GoogleIcon />
             Войти через Google
           </button>
 
           {/* Divider */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg,transparent,rgba(217,125,186,.3),transparent)' }} />
+          <div className="flex items-center gap-3 mb-5">
+            <div className="flex-1 h-px" style={{ background: '#f0dce8' }} />
             <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: '#d4a0c0' }}>или</span>
-            <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg,transparent,rgba(217,125,186,.3),transparent)' }} />
+            <div className="flex-1 h-px" style={{ background: '#f0dce8' }} />
+          </div>
+
+          {/* Mode tabs */}
+          <div className="flex gap-2 mb-5">
+            {(['login', 'register'] as Mode[]).map(m => (
+              <button key={m} onClick={() => setMode(m)}
+                className="flex-1 py-2 rounded-xl text-[13px] font-bold transition-all duration-200"
+                style={mode === m ? {
+                  background: 'linear-gradient(135deg,#f9a8d4,#c084fc)',
+                  color: '#fff',
+                  boxShadow: '0 4px 14px rgba(249,168,212,.4)',
+                } : {
+                  background: '#fdf0f8',
+                  color: '#c4a0b8',
+                  border: '1px solid #f0dce8',
+                }}>
+                {m === 'login' ? 'Войти' : 'Регистрация'}
+              </button>
+            ))}
           </div>
 
           {/* Form */}
           <form onSubmit={submit} className="space-y-3">
             {mode === 'register' && (
-              <InputField icon={<User className="w-4 h-4" />} type="text" placeholder="Ваше имя (необязательно)"
-                value={name} onChange={setName} />
+              <InputField icon={<User className="w-4 h-4" />} type="text"
+                placeholder="Ваше имя (необязательно)" value={name} onChange={setName} />
             )}
-            <InputField icon={<Mail className="w-4 h-4" />} type="email" placeholder="Email адрес"
-              value={email} onChange={setEmail} required />
+            <InputField icon={<Mail className="w-4 h-4" />} type="email"
+              placeholder="Email адрес" value={email} onChange={setEmail} required />
             <InputField icon={<Lock className="w-4 h-4" />}
               type={showPwd ? 'text' : 'password'} placeholder="Пароль (минимум 6 символов)"
               value={password} onChange={setPassword} required
@@ -212,7 +192,14 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             )}
 
             <button type="submit" disabled={loading || !email || !password}
-              className="btn btn-primary btn-lg w-full mt-1">
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-[15px] font-bold transition-all duration-200 mt-1"
+              style={{
+                background: (!email || !password) ? '#f5e8f2' : 'linear-gradient(135deg,#f9a8d4,#c084fc)',
+                color: (!email || !password) ? '#d4a0c0' : '#fff',
+                boxShadow: (!email || !password) ? 'none' : '0 8px 24px rgba(249,168,212,.5)',
+              }}
+              onMouseEnter={e => { if (email && password) (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; }}>
               {loading ? <LoadingSpinner /> : (
                 <>{mode === 'login' ? 'Войти' : 'Создать аккаунт'}<ArrowRight className="w-4 h-4" /></>
               )}
@@ -223,9 +210,9 @@ export function AuthPage({ initialMode = 'login' }: Props) {
             {mode === 'login' ? 'Нет аккаунта? ' : 'Уже есть аккаунт? '}
             <button onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
               className="font-bold transition-colors"
-              style={{ color: '#e88cc4' }}
+              style={{ color: '#e879b8' }}
               onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#c0628f'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#e88cc4'; }}>
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#e879b8'; }}>
               {mode === 'login' ? 'Зарегистрироваться' : 'Войти'}
             </button>
           </p>
@@ -235,8 +222,59 @@ export function AuthPage({ initialMode = 'login' }: Props) {
   );
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ── Cat SVG illustration ──────────────────────────────────────────────────────
+function CatIllustration() {
+  return (
+    <svg width="160" height="180" viewBox="0 0 160 180" fill="none">
+      {/* Body */}
+      <ellipse cx="80" cy="130" rx="52" ry="44" fill="rgba(255,255,255,0.25)" />
+      {/* Head */}
+      <ellipse cx="80" cy="78" rx="42" ry="40" fill="rgba(255,255,255,0.25)" />
+      {/* Ears */}
+      <polygon points="45,50 35,18 62,44" fill="rgba(255,255,255,0.3)" />
+      <polygon points="115,50 125,18 98,44" fill="rgba(255,255,255,0.3)" />
+      {/* Inner ears */}
+      <polygon points="47,48 39,26 60,44" fill="rgba(249,168,212,0.5)" />
+      <polygon points="113,48 121,26 100,44" fill="rgba(249,168,212,0.5)" />
+      {/* Eyes */}
+      <ellipse cx="65" cy="76" rx="9" ry="10" fill="rgba(255,255,255,0.9)" />
+      <ellipse cx="95" cy="76" rx="9" ry="10" fill="rgba(255,255,255,0.9)" />
+      <circle cx="66" cy="77" r="5" fill="#3d1a30" />
+      <circle cx="96" cy="77" r="5" fill="#3d1a30" />
+      <circle cx="68" cy="74" r="2" fill="white" />
+      <circle cx="98" cy="74" r="2" fill="white" />
+      {/* Nose */}
+      <ellipse cx="80" cy="90" rx="4" ry="3" fill="rgba(249,168,212,0.8)" />
+      {/* Mouth */}
+      <path d="M76 93 Q80 98 84 93" stroke="rgba(255,255,255,0.7)" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      {/* Whiskers */}
+      <line x1="38" y1="88" x2="72" y2="91" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="38" y1="93" x2="72" y2="93" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="88" y1="91" x2="122" y2="88" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="88" y1="93" x2="122" y2="93" stroke="rgba(255,255,255,0.6)" strokeWidth="1.2" strokeLinecap="round" />
+      {/* Tail */}
+      <path d="M128 148 Q155 130 148 108 Q144 96 136 102" stroke="rgba(255,255,255,0.3)" strokeWidth="12" fill="none" strokeLinecap="round" />
+      {/* Paws */}
+      <ellipse cx="60" cy="166" rx="16" ry="10" fill="rgba(255,255,255,0.2)" />
+      <ellipse cx="100" cy="166" rx="16" ry="10" fill="rgba(255,255,255,0.2)" />
+    </svg>
+  );
+}
 
+// ── Paw print SVG ─────────────────────────────────────────────────────────────
+function PawIcon({ size = 32, color = '#fff' }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 64 64" fill={color}>
+      <ellipse cx="20" cy="14" rx="7" ry="9" />
+      <ellipse cx="44" cy="14" rx="7" ry="9" />
+      <ellipse cx="10" cy="30" rx="6" ry="8" />
+      <ellipse cx="54" cy="30" rx="6" ry="8" />
+      <path d="M32 22 C16 22 10 34 12 46 C14 54 22 58 32 58 C42 58 50 54 52 46 C54 34 48 22 32 22Z" />
+    </svg>
+  );
+}
+
+// ── Input field ───────────────────────────────────────────────────────────────
 function InputField({ icon, type, placeholder, value, onChange, required, suffix }: {
   icon: React.ReactNode; type: string; placeholder: string;
   value: string; onChange: (v: string) => void;
@@ -246,18 +284,18 @@ function InputField({ icon, type, placeholder, value, onChange, required, suffix
   return (
     <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-200"
       style={{
-        background: focused ? 'rgba(249,168,212,.07)' : 'rgba(255,255,255,.85)',
-        border: focused ? '1.5px solid rgba(232,140,196,.55)' : '1.5px solid rgba(240,168,208,.28)',
-        boxShadow: focused ? '0 0 0 4px rgba(249,168,212,.13)' : '0 2px 6px rgba(240,168,208,.07)',
+        background: focused ? '#fdf5fa' : '#faf5f8',
+        border: focused ? '1.5px solid #f0a8d0' : '1.5px solid #f0dce8',
+        boxShadow: focused ? '0 0 0 4px rgba(249,168,212,.12)' : 'none',
       }}>
-      <span className="shrink-0 transition-colors" style={{ color: focused ? '#e88cc4' : '#d4a0c0' }}>
+      <span className="shrink-0 transition-colors" style={{ color: focused ? '#e879b8' : '#d4a0c0' }}>
         {icon}
       </span>
       <input type={type} placeholder={placeholder} value={value} required={required}
         onChange={e => onChange(e.target.value)}
         onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
         className="flex-1 bg-transparent text-[14px] font-medium outline-none"
-        style={{ color: '#4a1a3a' }} />
+        style={{ color: '#3d1a30' }} />
       {suffix}
     </div>
   );
@@ -278,7 +316,7 @@ function GoogleIcon() {
       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
     </svg>
   );
 }
@@ -324,11 +362,11 @@ export function OAuthCallback() {
       style={{ background: 'linear-gradient(135deg,#fce4f3,#e8f4fd)' }}>
       <div className="flex flex-col items-center gap-4 ani-up">
         <div className="w-14 h-14 rounded-3xl flex items-center justify-center"
-          style={{ background: 'linear-gradient(135deg,#f9a8d4,#7ec8e3)', boxShadow: '0 8px 32px rgba(249,168,212,.5)' }}>
+          style={{ background: 'linear-gradient(135deg,#f9a8d4,#c084fc)', boxShadow: '0 8px 32px rgba(249,168,212,.5)' }}>
           <Heart className="w-7 h-7 text-white fill-white" strokeWidth={0} />
         </div>
         <div className="w-5 h-5 border-2 rounded-full animate-spin"
-          style={{ borderColor: 'rgba(232,140,196,.3)', borderTopColor: '#e88cc4' }} />
+          style={{ borderColor: 'rgba(232,140,196,.3)', borderTopColor: '#e879b8' }} />
         <p className="text-[14px] font-semibold text-center px-6" style={{ color: '#b07aa0' }}>
           {status === 'waking'
             ? 'Сервер просыпается, подождите ~30 секунд...'
