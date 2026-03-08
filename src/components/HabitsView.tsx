@@ -1,7 +1,112 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useStore } from '../store';
 import { HABIT_COLORS, type HabitColor, type HabitIcon } from '../types';
-import { Plus, Flame, Check, Trash2, X, Star, Heart, Zap, BookOpen, Dumbbell, Droplets, Music, Sun, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Flame, Check, Trash2, X, Star, Heart, Zap, BookOpen, Dumbbell, Droplets, Music, Sun, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
+
+// ── Motivational quotes ───────────────────────────────────────────────────────
+const QUOTES = [
+  { text: 'Маленькие шаги каждый день приводят к большим результатам.', author: 'Лао-цзы' },
+  { text: 'Успех — это сумма маленьких усилий, повторяемых день за днём.', author: 'Роберт Кольер' },
+  { text: 'Не важно, как медленно ты идёшь, главное — не останавливаться.', author: 'Конфуций' },
+  { text: 'Дисциплина — это мост между целями и достижениями.', author: 'Джим Рон' },
+  { text: 'Каждый день — это новый шанс стать лучше, чем вчера.', author: '' },
+  { text: 'Привычки — это архитектура нашей жизни.', author: '' },
+  { text: 'Ты ближе к цели, чем думаешь. Продолжай!', author: '' },
+  { text: 'Победа над собой — самая великая из побед.', author: 'Платон' },
+  { text: 'Сила воли — это мышца. Чем больше тренируешь, тем сильнее становится.', author: '' },
+  { text: 'Один день без привычки — это просто день. Один год — это жизнь.', author: '' },
+  { text: 'Твои действия сегодня — это твоя жизнь завтра.', author: '' },
+  { text: 'Постоянство — ключ к мастерству.', author: '' },
+  { text: 'Каждое выполненное дело делает тебя сильнее.', author: '' },
+  { text: 'Не ищи мотивацию — создавай привычку.', author: '' },
+  { text: 'Серия дней — это не просто цифра. Это твой характер.', author: '' },
+];
+
+function getRandomQuote() {
+  return QUOTES[Math.floor(Math.random() * QUOTES.length)];
+}
+
+// ── Motivation toast ──────────────────────────────────────────────────────────
+function MotivationToast({ habitTitle, onClose }: { habitTitle: string; onClose: () => void }) {
+  const quote = useMemo(() => getRandomQuote(), []);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    // animate in
+    const t1 = setTimeout(() => setVisible(true), 30);
+    // auto-close after 4s
+    const t2 = setTimeout(() => { setVisible(false); setTimeout(onClose, 400); }, 4000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center pb-8 px-4 pointer-events-none">
+      <div
+        className="pointer-events-auto w-full max-w-sm"
+        style={{
+          transform: visible ? 'translateY(0) scale(1)' : 'translateY(40px) scale(0.95)',
+          opacity: visible ? 1 : 0,
+          transition: 'transform .4s cubic-bezier(.34,1.56,.64,1), opacity .35s ease',
+        }}>
+        <div className="rounded-3xl overflow-hidden"
+          style={{
+            background: 'rgba(255,248,253,.97)',
+            border: '1.5px solid rgba(255,182,215,.4)',
+            boxShadow: '0 24px 60px rgba(200,150,180,.25), 0 4px 20px rgba(147,213,240,.15)',
+          }}>
+          {/* Top gradient strip */}
+          <div className="h-1" style={{ background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)' }} />
+
+          <div className="px-5 py-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg,rgba(255,182,215,.25),rgba(147,213,240,.25))' }}>
+                  <Sparkles className="w-4 h-4" style={{ color: '#ffb6d9' }} />
+                </div>
+                <div>
+                  <div className="text-[13px] font-black" style={{ color: '#5a3a5a' }}>Отлично!</div>
+                  <div className="text-[11px]" style={{ color: '#b090b0' }}>«{habitTitle}» выполнено</div>
+                </div>
+              </div>
+              <button onClick={() => { setVisible(false); setTimeout(onClose, 400); }}
+                className="w-7 h-7 flex items-center justify-center rounded-xl transition-all"
+                style={{ color: '#c8a0c0' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,182,215,.15)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; }}>
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Quote */}
+            <div className="px-3 py-3 rounded-2xl"
+              style={{ background: 'linear-gradient(135deg,rgba(255,182,215,.1),rgba(147,213,240,.1))', border: '1px solid rgba(255,182,215,.2)' }}>
+              <p className="text-[14px] font-semibold leading-relaxed" style={{ color: '#5a3a5a' }}>
+                «{quote.text}»
+              </p>
+              {quote.author && (
+                <p className="text-[11px] mt-1.5 text-right font-medium" style={{ color: '#b090b0' }}>
+                  — {quote.author}
+                </p>
+              )}
+            </div>
+
+            {/* Progress dots (auto-close timer) */}
+            <div className="flex justify-center mt-3">
+              <div className="h-1 rounded-full overflow-hidden w-16" style={{ background: 'rgba(255,182,215,.2)' }}>
+                <div className="h-full rounded-full" style={{
+                  background: 'linear-gradient(90deg,#ffb6d9,#93d5f0)',
+                  animation: 'quote-timer 4s linear forwards',
+                }} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function dateStr(d: Date) {
@@ -166,11 +271,19 @@ function HabitForm({ onClose }: { onClose: () => void }) {
 function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekDays: Date[] }) {
   const { toggleHabitDate, deleteHabit } = useStore();
   const [confirmDel, setConfirmDel] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const hex   = HABIT_COLORS[habit.color];
   const streak = useMemo(() => calcStreak(habit.completions), [habit.completions]);
   const completionSet = useMemo(() => new Set(habit.completions), [habit.completions]);
   const todayKey = dateStr(new Date());
   const doneToday = completionSet.has(todayKey);
+
+  const handleToggleToday = useCallback(async () => {
+    const wasDone = completionSet.has(todayKey);
+    await toggleHabitDate(habit.id, todayKey);
+    // show quote only when marking as done (not undoing)
+    if (!wasDone) setShowToast(true);
+  }, [completionSet, todayKey, toggleHabitDate, habit.id]);
 
   // completion rate for shown week
   const weekDone = weekDays.filter(d => completionSet.has(dateStr(d))).length;
@@ -281,7 +394,7 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
                 style={{ width: `${weekPct}%`, background: `linear-gradient(90deg,${hex},${hex}aa)` }} />
             </div>
           </div>
-          <button onClick={() => toggleHabitDate(habit.id, todayKey)}
+          <button onClick={handleToggleToday}
             className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[13px] font-bold transition-all duration-200 shrink-0"
             style={{
               background: doneToday ? `${hex}20` : 'linear-gradient(135deg,#ffb6d9,#93d5f0)',
@@ -298,6 +411,10 @@ function HabitCard({ habit, weekDays }: { habit: import('../types').Habit; weekD
         </div>
       </div>
     </div>
+
+    {showToast && (
+      <MotivationToast habitTitle={habit.title} onClose={() => setShowToast(false)} />
+    )}
   );
 }
 
