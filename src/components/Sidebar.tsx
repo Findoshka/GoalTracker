@@ -1,4 +1,4 @@
-import { Inbox, Star, List, CalendarDays, BarChart2, Plus, ChevronDown, X, CornerDownRight, Archive, Trash2, Settings, Heart, LogOut } from 'lucide-react';
+import { Inbox, Star, List, CalendarDays, BarChart2, Flame, Plus, ChevronDown, X, CornerDownRight, Archive, Trash2, Settings, Heart, LogOut } from 'lucide-react';
 import { useStore } from '../store';
 import { GOAL_COLORS, type ViewMode } from '../types';
 import { useAuth } from '../AuthContext';
@@ -59,6 +59,7 @@ export function Sidebar({ onNewGoal, onNavigate }: Props) {
         {navItem('today',    <Star         className="w-[15px] h-[15px] shrink-0" />, 'Сегодня',  todayCount)}
         {navItem('plans',    <List         className="w-[15px] h-[15px] shrink-0" />, 'Планы')}
         {navItem('calendar', <CalendarDays className="w-[15px] h-[15px] shrink-0" />, 'Календарь')}
+        {navItem('habits',   <Flame        className="w-[15px] h-[15px] shrink-0" />, 'Привычки')}
         {navItem('stats',    <BarChart2    className="w-[15px] h-[15px] shrink-0" />, 'Статистика')}
       </nav>
 

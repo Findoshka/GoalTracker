@@ -9,6 +9,7 @@ import { CalendarView } from './components/CalendarView';
 import { GoalDetail } from './components/GoalDetail';
 import { GoalForm } from './components/GoalForm';
 import { StatsView } from './components/StatsView';
+import { HabitsView } from './components/HabitsView';
 import { AuthPage, OAuthCallback } from './components/AuthPage';
 import { Heart, Menu } from 'lucide-react';
 
@@ -88,6 +89,7 @@ function AppShell() {
         {view === 'plans'       && <PlansView onNewGoal={() => setGoalFormOpen(true)} />}
         {view === 'calendar'    && <CalendarView />}
         {view === 'goal-detail' && <GoalDetail />}
+        {view === 'habits'      && <HabitsView />}
         {view === 'stats'       && <StatsView />}
       </main>
 

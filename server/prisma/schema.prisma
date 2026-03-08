@@ -16,6 +16,7 @@ model User {
 
   goals        Goal[]
   inboxTasks   InboxTask[]
+  habits       Habit[]
   refreshTokens RefreshToken[]
 
   createdAt DateTime @default(now())
@@ -91,4 +92,29 @@ model InboxTask {
   dueDate   String?
 
   createdAt DateTime @default(now())
+}
+
+model Habit {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String   @default("")
+  color       String   @default("pink")
+  icon        String   @default("star")
+  archived    Boolean  @default(false)
+
+  completions HabitCompletion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HabitCompletion {
+  id      String @id @default(cuid())
+  habitId String
+  habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+  date    String // YYYY-MM-DD
+
+  @@unique([habitId, date])
 }

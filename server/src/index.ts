@@ -7,6 +7,7 @@ import passport from 'passport';
 import authRouter from './routes/auth';
 import goalsRouter from './routes/goals';
 import inboxRouter from './routes/inbox';
+import habitsRouter from './routes/habits';
 
 const app = express();
 const PORT = parseInt(process.env.PORT ?? '4000', 10);
@@ -22,6 +23,7 @@ app.use(passport.initialize());
 app.use('/auth', authRouter);
 app.use('/api/goals', goalsRouter);
 app.use('/api/inbox', inboxRouter);
+app.use('/api/habits', habitsRouter);
 
 app.get('/health', (_req, res) => res.json({ ok: true }));
 

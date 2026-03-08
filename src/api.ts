@@ -96,3 +96,12 @@ export const inboxApi = {
   update: (id: string, data: object) => api.patch(`/api/inbox/${id}`, data),
   remove: (id: string) => api.delete(`/api/inbox/${id}`),
 };
+
+// ─── Habits API ───────────────────────────────────────────────────────────────
+export const habitsApi = {
+  list: () => api.get('/api/habits'),
+  create: (data: object) => api.post('/api/habits', data),
+  update: (id: string, data: object) => api.patch(`/api/habits/${id}`, data),
+  remove: (id: string) => api.delete(`/api/habits/${id}`),
+  toggle: (id: string, date: string) => api.post(`/api/habits/${id}/complete`, { date }),
+};

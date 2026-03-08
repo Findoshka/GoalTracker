@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import type { BigGoal, GoalColor, InboxTask, ViewMode } from './types';
-import { goalsApi, inboxApi } from './api';
+import type { BigGoal, GoalColor, Habit, HabitColor, HabitIcon, InboxTask, ViewMode } from './types';
+import { goalsApi, inboxApi, habitsApi } from './api';
 
 // Map API response (snake_case ids) to frontend types
 function mapGoal(g: Record<string, unknown>): BigGoal {
@@ -41,9 +41,23 @@ function mapInbox(t: Record<string, unknown>): InboxTask {
   };
 }
 
+function mapHabit(h: Record<string, unknown>): Habit {
+  const completions = ((h.completions as { date: string }[]) ?? []).map(c => c.date);
+  return {
+    id: h.id as string,
+    title: h.title as string,
+    description: (h.description as string) ?? '',
+    color: (h.color as Habit['color']) ?? 'pink',
+    icon: (h.icon as Habit['icon']) ?? 'star',
+    completions,
+    createdAt: h.createdAt as string,
+  };
+}
+
 interface AppState {
   goals: BigGoal[];
   inbox: InboxTask[];
+  habits: Habit[];
   view: ViewMode;
   activeGoalId: string | null;
   initialized: boolean;
@@ -53,6 +67,12 @@ interface AppState {
   clearAll: () => void;
 
   setView: (v: ViewMode, goalId?: string) => void;
+
+  // Habits
+  addHabit: (title: string, description: string, color: HabitColor, icon: HabitIcon) => Promise<void>;
+  updateHabit: (id: string, patch: Partial<Pick<Habit, 'title' | 'description' | 'color' | 'icon'>>) => Promise<void>;
+  deleteHabit: (id: string) => Promise<void>;
+  toggleHabitDate: (id: string, date: string) => Promise<void>;
 
   // Inbox
   addInboxTask: (title: string, dueDate?: string) => Promise<void>;
@@ -85,26 +105,60 @@ interface AppState {
 export const useStore = create<AppState>((set, get) => ({
   goals: [],
   inbox: [],
+  habits: [],
   view: 'plans',
   activeGoalId: null,
   initialized: false,
 
   // ── Bootstrap ────────────────────────────────────────────────────────────────
   loadAll: async () => {
-    const [goalsRes, inboxRes] = await Promise.all([
+    const [goalsRes, inboxRes, habitsRes] = await Promise.all([
       goalsApi.list(),
       inboxApi.list(),
+      habitsApi.list(),
     ]);
     set({
       goals: (goalsRes.data as Record<string, unknown>[]).map(mapGoal),
       inbox: (inboxRes.data as Record<string, unknown>[]).map(mapInbox),
+      habits: (habitsRes.data as Record<string, unknown>[]).map(mapHabit),
       initialized: true,
     });
   },
 
-  clearAll: () => set({ goals: [], inbox: [], initialized: false, view: 'plans', activeGoalId: null }),
+  clearAll: () => set({ goals: [], inbox: [], habits: [], initialized: false, view: 'plans', activeGoalId: null }),
 
   setView: (v, goalId) => set({ view: v, activeGoalId: goalId ?? null }),
+
+  // ── Habits ───────────────────────────────────────────────────────────────────
+  addHabit: async (title, description, color, icon) => {
+    const res = await habitsApi.create({ title, description, color, icon });
+    const habit = mapHabit(res.data as Record<string, unknown>);
+    set(s => ({ habits: [...s.habits, habit] }));
+  },
+
+  updateHabit: async (id, patch) => {
+    const res = await habitsApi.update(id, patch);
+    const updated = mapHabit(res.data as Record<string, unknown>);
+    set(s => ({ habits: s.habits.map(h => h.id === id ? updated : h) }));
+  },
+
+  deleteHabit: async (id) => {
+    await habitsApi.remove(id);
+    set(s => ({ habits: s.habits.filter(h => h.id !== id) }));
+  },
+
+  toggleHabitDate: async (id, date) => {
+    const res = await habitsApi.toggle(id, date);
+    const { completed } = res.data as { completed: boolean; date: string };
+    set(s => ({
+      habits: s.habits.map(h => h.id !== id ? h : {
+        ...h,
+        completions: completed
+          ? [...h.completions, date]
+          : h.completions.filter(d => d !== date),
+      }),
+    }));
+  },
 
   // ── Inbox ─────────────────────────────────────────────────────────────────────
   addInboxTask: async (title, dueDate) => {
