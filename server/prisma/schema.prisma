@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  avatar       String?
+  passwordHash String?
+  googleId     String?  @unique
+
+  goals        Goal[]
+  inboxTasks   InboxTask[]
+  refreshTokens RefreshToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Goal {
+  id          String  @id @default(cuid())
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String  @default("")
+  color       String  @default("blue")
+  deadline    String?
+
+  monthlyStages MonthlyStage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MonthlyStage {
+  id     String @id @default(cuid())
+  goalId String
+  goal   Goal   @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  title  String
+  month  Int
+  year   Int
+
+  weeklyGoals WeeklyGoal[]
+
+  createdAt DateTime @default(now())
+}
+
+model WeeklyGoal {
+  id           String       @id @default(cuid())
+  monthlyStageId String
+  monthlyStage MonthlyStage @relation(fields: [monthlyStageId], references: [id], onDelete: Cascade)
+  title        String
+  weekNumber   Int
+
+  tasks Task[]
+
+  createdAt DateTime @default(now())
+}
+
+model Task {
+  id           String     @id @default(cuid())
+  weeklyGoalId String
+  weeklyGoal   WeeklyGoal @relation(fields: [weeklyGoalId], references: [id], onDelete: Cascade)
+  title        String
+  completed    Boolean    @default(false)
+  dueDate      String?
+
+  createdAt DateTime @default(now())
+}
+
+model InboxTask {
+  id        String  @id @default(cuid())
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  completed Boolean @default(false)
+  dueDate   String?
+
+  createdAt DateTime @default(now())
+}
