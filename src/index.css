@@ -5,15 +5,7 @@
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* Scale entire UI — makes 100% browser zoom look like ~150%.
-   font-size on html scales rem units; zoom scales everything including px values in inline styles. */
-html {
-  height: 100%;
-  font-size: 87.5%; /* 14px base instead of 16px — affects rem-based Tailwind classes */
-  zoom: 1.25;       /* scales px values in inline styles + all layout */
-}
-
-body, #root { height: 100%; }
+html, body, #root { height: 100%; }
 
 body {
   font-family: var(--font-sans);

@@ -135,6 +135,16 @@ export default function App() {
     }
   }, [user, loadAll, clearAll]);
 
+  // Apply zoom only when the main app is shown (not on auth/loading screens)
+  const isApp = !path.startsWith('/auth/callback') && !loading && !!user && initialized;
+  useEffect(() => {
+    if (isApp) {
+      document.documentElement.style.zoom = '1.25';
+    } else {
+      document.documentElement.style.zoom = '';
+    }
+  }, [isApp]);
+
   if (path.startsWith('/auth/callback')) return <OAuthCallback />;
   if (loading) return <LoadingScreen />;
   if (!user) {
